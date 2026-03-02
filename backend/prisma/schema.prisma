@@ -36,6 +36,7 @@ model User {
   email     String    @unique
 
   tasks     Task[]
+  teams     Team[]
   createdAt DateTime  @default(now())
 }
 
@@ -44,6 +45,7 @@ model Team {
   name  String
 
   tasks Task[]
+  users User[]
 }
 
 model Task {
