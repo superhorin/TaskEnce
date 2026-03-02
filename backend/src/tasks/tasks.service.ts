@@ -1,5 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { CreateTaskDto } from './dto/create-task.dto';
 
 @Injectable()
 export class TasksService {
@@ -15,7 +16,7 @@ export class TasksService {
 		});
 	}
 
-	async createTask(title: string) {
+	async createTask(dto: CreateTaskDto) {
 		let	defaultUser = await this.prisma.user.findFirst();
 
 		if (!defaultUser) {
@@ -30,10 +31,16 @@ export class TasksService {
 
 		return this.prisma.task.create({
 			data: {
-				title: title,
-				authorId: defaultUser.id,
+				title:			dto.title,
+				description:	dto.description,
+				priority:		dto.priority,
+				authorId: 		defaultUser.id,
+				teamId: 		dto.teamId,
 			},
-			include: { author: true }
+			include: {
+				author: true,
+				team: true,
+			}
 		})
 	}
 }
