@@ -25,11 +25,14 @@ enum  Status {
 }
 
 model User {
-  id        String    @id @default(uuid())
-  name      String  
-  email     String    @unique
+  id    String  @id @default(uuid())
+  name  String
+  email String  @unique
 
-  tasks     Task[]
+  createdTasks  Task[]   @relation("TaskAuthor")
+  assignedTasks Task[]   @relation("TaskAssignee")
+  achievedTasks Task[]   @relation("TaskAchiever")
+
   teams     Team[]
   createdAt DateTime  @default(now())
 }
@@ -51,11 +54,18 @@ model Task {
   status      Status    @default(TODO)
 
   authorId    String
-  author      User      @relation(fields: [authorId], references: [id])
+  author      User      @relation("TaskAuthor", fields: [authorId], references: [id])
+
+  assigneeId  String?
+  assignee    User?     @relation("TaskAssignee", fields: [assigneeId], references: [id])
+
+  achieverId  String?
+  achiever    User?     @relation("TaskAchiever", fields: [achieverId], references: [id])
 
   teamId      String?
   team        Team?     @relation(fields: [teamId], references: [id])
 
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+  achievedAt  DateTime?
 }
