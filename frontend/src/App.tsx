@@ -16,8 +16,8 @@ function App() {
     <div>
       <h1>API Test</h1>
       <p>Backend says: {message}</p>
-      <h2>tasks</h2>
-      <TaskManeger />
+      {/* <h2>tasks</h2>
+      <TaskManeger /> */}
     </div>
   )
 }
