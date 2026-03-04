@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react'
-import TaskManeger from './TaskManeger'
+import TaskManager from './TaskManager'
+import { API_URL } from './config/env'
 
 function App() {
   const [message, setMessage] = useState('')
 
   useEffect(() => {
-    // バックエンド(Nest.js)にリクエストを送る
-    fetch('http://localhost:3000')
+    fetch(`${API_URL}`)
       .then(res => res.text())
       .then(data => setMessage(data))
       .catch(err => console.error(err))
@@ -16,8 +16,7 @@ function App() {
     <div>
       <h1>API Test</h1>
       <p>Backend says: {message}</p>
-      {/* <h2>tasks</h2>
-      <TaskManeger /> */}
+      <TaskManager />
     </div>
   )
 }
