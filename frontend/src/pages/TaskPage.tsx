@@ -1,12 +1,13 @@
 // src/pages/TaskPage.tsx
 import { useEffect, useState } from 'react'
 import { TaskManager } from '../features/tasks/components/TaskManager'
+import { API_URL } from '../config/env'
 
 export const TaskPage = () => {
 	const [message, setMessage] = useState('')
 
 	useEffect(() => {
-		fetch('http://localhost:3000')
+		fetch(`${API_URL}`)
 			.then(res => res.text())
 			.then(data => setMessage(data))
 			.catch(err => console.error(err))
