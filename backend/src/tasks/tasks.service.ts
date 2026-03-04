@@ -34,6 +34,7 @@ export class TasksService {
 				title:			dto.title,
 				description:	dto.description,
 				priority:		dto.priority,
+				status:			dto.status,
 				authorId: 		defaultUser.id,
 				teamId: 		dto.teamId,
 			},
