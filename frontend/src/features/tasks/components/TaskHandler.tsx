@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import { addTask } from "../taskSlice";
+import { Button } from "@/components/ui/button";
 
 export const TaskHandler = () => {
 	const dispatch = useAppDispatch();
@@ -27,9 +28,9 @@ export const TaskHandler = () => {
 					placeholder="type task name..."
 					disabled={loading}
 				/>
-				<button type="submit" disabled={loading || !title.trim()}>
+				<Button type="submit" disabled={loading || !title.trim()}>
 					{loading ? 'Sending...' : 'add'}
-				</button>
+				</Button>
 			</form>
 		</div>
 	);
