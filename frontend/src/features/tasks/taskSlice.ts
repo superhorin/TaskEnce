@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice, isAction, type PayloadAction } from '@reduxjs/toolkit';
 import type { Task } from './task';
-import { act } from 'react';
+import { API_URL } from '../../config/env';
 
 // 1. 状態（State）の型定義
 interface TaskState {
@@ -11,7 +11,7 @@ interface TaskState {
 export const addTask= createAsyncThunk(
   'tasks/addTask',
   async(title: string) => {
-    const res = await fetch('http://localhost:3000/tasks', {
+    const res = await fetch(`${API_URL}/tasks`, {
       method: "POST",
       headers: {
         'Content-Type': 'application/json',
@@ -32,7 +32,7 @@ export const addTask= createAsyncThunk(
 export const fetchTasks = createAsyncThunk(
   'tasks/fetchTasks',
   async() => {
-    const res = await fetch('http://localhost:3000/tasks');
+    const res = await fetch(`${API_URL}/tasks`);
     const data = await res.json();
 
     return data;
