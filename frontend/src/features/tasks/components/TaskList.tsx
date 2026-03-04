@@ -25,7 +25,9 @@ export const TaskList = () => {
 								</CardHeader>
 								<CardContent>
 									<strong>{task.title}</strong>
+									<span>{task.description}</span>
 									<span>{task.priority}</span>
+									<span>{task.status}</span>
 									<small>{task.author.name}</small>
 								</CardContent>
 							</Card>

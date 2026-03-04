@@ -2,28 +2,29 @@ import { createAsyncThunk, createSlice, isAction, type PayloadAction } from '@re
 import type { Task } from './task';
 import { API_URL } from '../../config/env';
 
-// 1. 状態（State）の型定義
 interface TaskState {
   items: Task[];
   loading: boolean;
 }
 
+export type CreateTaskPayload = Pick<Task, 'title' | 'description' | 'priority' | 'status'>;
+
 export const addTask= createAsyncThunk(
   'tasks/addTask',
-  async(title: string) => {
+  async(taskData: CreateTaskPayload) => {
     const res = await fetch(`${API_URL}/tasks`, {
       method: "POST",
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ title }),
+      body: JSON.stringify(taskData),
     });
 
     if (!res.ok) {
       throw new Error('server error: add task');
     }
 
-    const newTask = await res.json();
+    const newTask: Task = await res.json();
 
     return newTask;
   }
