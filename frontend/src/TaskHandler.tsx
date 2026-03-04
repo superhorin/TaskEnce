@@ -1,5 +1,6 @@
 import { useState } from "react";
 import type { Task } from "./types/task"
+import { API_URL } from "./config/env";
 
 type TaskProps = {
 	tasks: Task[];
@@ -22,7 +23,7 @@ export default function TaskHandler ({tasks, setTasks, loading, setLoading}: Tas
 		setLoading(true);
 
 		try {
-			const response = await fetch('http://localhost:3000/tasks', {
+			const response = await fetch(`${API_URL}/tasks`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
