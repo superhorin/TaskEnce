@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react'
 import TaskManager from './TaskManager'
+import { API_URL } from './config/env'
 
 function App() {
   const [message, setMessage] = useState('')
 
   useEffect(() => {
-    fetch('http://localhost:3000')
+    fetch(`${API_URL}`)
       .then(res => res.text())
       .then(data => setMessage(data))
       .catch(err => console.error(err))
