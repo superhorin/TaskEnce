@@ -24,7 +24,7 @@ export const TaskColumn = ({ title, tasks, titleColor }: TaskColumnProps) => {
 								<span className="text-sm text-slate-600">{task.description}</span>
 								<div className="flex justify-between items-center mt-2">
 									<span className="text-xs px-2 py-1 bg-slate-100 rounded">
-										{task.priority}
+										difficulty: {task.difficulty} duration: {task.duration} priority: {task.priority} progress: {task.progress}
 									</span>
 									<small className="text-slate-500">{task.author?.name}</small>
 								</div>

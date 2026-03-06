@@ -13,26 +13,26 @@ datasource db {
 }
 
 enum Difficulty {
-  TRIVIAL,
-  SIMPLE,
-  CHALLENGING,
-  HARD,
+  TRIVIAL
+  SIMPLE
+  CHALLENGING
+  HARD
   EPIC
 }
 
 enum Duration {
-  BURST,
-  QUICK,
-  STANDARD,
-  LONG,
+  BURST
+  QUICK
+  STANDARD
+  LONG
   MARATHON
 }
 
 enum Priority {
-  MINOR,
-  NORMAL,
-  IMPORTANT,
-  MAJOR,
+  MINOR
+  NORMAL
+  IMPORTANT
+  MAJOR
   CRITICAL
 }
 
