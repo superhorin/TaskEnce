@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { TaskHandler } from "./TaskHandler";
+import { TaskForm } from "./TaskForm";
 import { TaskList } from "./TaskList";
 import { fetchTasks } from "../taskSlice";
 import { useAppDispatch } from "../../../app/hooks";
@@ -14,7 +14,7 @@ export const TaskManager = () => {
 	return (
 		<div className="max-w-6xl mx-auto">
 			<div className="mb-8">
-				<TaskHandler />
+				<TaskForm />
 			</div>
 			<TaskList />
 		</div>

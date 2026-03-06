@@ -11,7 +11,7 @@ export const TaskList = () => {
 			<p>loading...</p>) : tasks.length === 0 ? (
 				<p>Let's get task!!!!</p>
 			) : (
-			<div className="grid grid-cols-2 gap-8">
+			<div>
 				<TaskColumn title="ALL" tasks={tasks} />
 			</div>
 		)
