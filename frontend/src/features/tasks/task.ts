@@ -1,23 +1,29 @@
-export type Priority = 'LOW' | 'MEDIUM' | 'HIGH';
-export type Status = 'TODO' | 'IN_PROGRESS' | 'DONE';
+import type { User } from "../users/user";
+import type { Team } from "../teams/team";
 
-export interface User {
-	id:   string;
-	name: string;
-}
+export type Difficulty = 'TRIVIAL' | 'SIMPLE' | 'CHALLENGING' | 'HARD' | 'EPIC';
+export type Duration = 'BURST' | 'QUICK' | 'STANDARD' | 'LONG' | 'MARATHON';
+export type Priority = 'MINOR' | 'NORMAL' | 'IMPORTANT' | 'MAJOR' | 'CRITICAL';
 
 export interface Task {
 	id:           string;
 	title:        string;
 	description?: string;
-	priority:     Priority;
-	status:       Status;
 
-	author:      User;
-	assignee?:    User;
-	achiever?:    User;
+	difficulty:	Difficulty;
+	duration:	Duration;
+	priority:	Priority;
 
-	createdAt:    string;
-	updatedAt:    string;
-	achievedAt?:  string;
+	progress:	number;
+
+	author:		User;
+	assignee?:	User[];
+	achiever?:	User[];
+
+	team?:	Team[];
+
+	createdAt:    	string;
+	updatedAt:    	string;
+	achievedAt?: 	string;
+	dueDate?:		string;
 }
