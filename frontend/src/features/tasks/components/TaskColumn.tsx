@@ -11,7 +11,7 @@ export const TaskColumn = ({ title, tasks, titleColor }: TaskColumnProps) => {
 	return (
 		<div>
 			<h2 className={`text-xl font-bold mb-4 ${titleColor}`}>{title}</h2>
-			<ul className="space-y-2">
+			<ul>
 				{tasks.map((task) => (
 					<li key={task.id}>
 						<Card className="w-full shadow-sm hover:shadow-md transition-shadow">
