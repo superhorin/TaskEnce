@@ -2,7 +2,7 @@ import { TaskPage } from '../pages/TaskPage'
 
 function App() {
   return (
-    <div className='app-container' >
+    <div className="app-container">
       <TaskPage />
     </div>
   )
