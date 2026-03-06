@@ -1,40 +1,24 @@
 import { useAppSelector } from "../../../app/hooks";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { TaskColumn } from "./TaskColumn";
 
 export const TaskList = () => {
 
 	const tasks = useAppSelector(state => state.tasks.items);
 	const loading = useAppSelector(state => state.tasks.loading);
 
+	const todoTasks = tasks.filter((task) => task.status === 'TODO');
+	const inProgressTasks = tasks.filter((task) => task.status === 'IN_PROGRESS');
+
 	return (
-		<div>
-			<p>Tasks List</p>
-			{loading ? (
-				<p>loading.....</p>
-			) : tasks.length === 0 ? (
-				<p>No tasks</p>
+		loading ? (
+			<p>loading...</p>) : tasks.length === 0 ? (
+				<p>Let's get task!!!!</p>
 			) : (
-				<ul>
-					{tasks.map((task) => (
-						<li>
-							<Card className="max-w-2xl mx-auto">
-								<CardHeader>
-								<CardTitle className="text-2xl font-bold text-slate-800">
-									Tasks {task.id}
-								</CardTitle>
-								</CardHeader>
-								<CardContent>
-									<strong>{task.title}</strong>
-									<span>{task.description}</span>
-									<span>{task.priority}</span>
-									<span>{task.status}</span>
-									<small>{task.author.name}</small>
-								</CardContent>
-							</Card>
-						</li>
-					))}
-				</ul>
-			)}
-		</div>
+			<div className="grid grid-cols-2 gap-8">
+				<TaskColumn title="TODO" tasks={todoTasks} />
+				<TaskColumn title="IN_PROGRESS" tasks={inProgressTasks} />
+			</div>
+		)
 	);
 }
