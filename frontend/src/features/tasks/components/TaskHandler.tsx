@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import { addTask } from "../taskSlice";
 import { Button } from "@/components/ui/button";
-import type { Priority, Status } from "../task";
+import type { Difficulty, Duration, Priority } from "../task";
 
 export const TaskHandler = () => {
 	const dispatch = useAppDispatch();
@@ -10,8 +10,9 @@ export const TaskHandler = () => {
 
 	const [title, setTitle] = useState('');
 	const [description, setDescription] = useState('');
-	const [priority, setPriority] = useState<Priority>('MEDIUM');
-	const [status, setStatus] = useState<Status>('TODO');
+	const [difficulty, setDifficulty] = useState<Difficulty>('SIMPLE');
+	const [duration, setDuration] = useState<Duration>('STANDARD');
+	const [priority, setPriority] = useState<Priority>('NORMAL');
 
 	const handleSubmit = async(e: React.FormEvent) => {
 		e.preventDefault();
@@ -20,13 +21,15 @@ export const TaskHandler = () => {
 		dispatch(addTask({
 			title,
 			description,
+			difficulty,
+			duration,
 			priority,
-			status,
 		}));
 		setTitle('');
 		setDescription('');
-		setPriority('MEDIUM');
-		setStatus('TODO');
+		setDifficulty('SIMPLE');
+		setDuration('STANDARD');
+		setPriority('NORMAL');
 	};
 
 	return (
@@ -50,24 +53,41 @@ export const TaskHandler = () => {
 				/>
 
 				<select
+					value={difficulty}
+					onChange={(e) => setDifficulty(e.target.value as Difficulty)}
+					disabled={loading}
+				>
+					<option value="TRIVIAL">TRIVIAL</option>
+					<option value="SIMPLE">SIMPLE</option>
+					<option value="CHALLENGING">CHALLENGING</option>
+					<option value="HARD">HARD</option>
+					<option value="EPIC">EPIC</option>
+				</select>
+
+				<select
+					value={duration}
+					onChange={(e) => setDuration(e.target.value as Duration)}
+					disabled={loading}
+				>
+					<option value="BURST">BURST</option>
+					<option value="QUICK">QUICK</option>
+					<option value="STANDARD">STANDARD</option>
+					<option value="LONG">LONG</option>
+					<option value="MARATHON">MARATHON</option>
+				</select>
+
+				<select
 					value={priority}
 					onChange={(e) => setPriority(e.target.value as Priority)}
 					disabled={loading}
 				>
-					<option value="HIGH">High</option>
-					<option value="MEDIUM">Medium</option>
-					<option value="LOW">Low</option>
+					<option value="MINOR">MINOR</option>
+					<option value="NORMAL">NORMAL</option>
+					<option value="IMPORTANT">IMPORTANT</option>
+					<option value="MAJOR">MAJOR</option>
+					<option value="CRITICAL">CRITICAL</option>
 				</select>
 
-				<select
-					value={status}
-					onChange={(e) => setStatus(e.target.value as Status)}
-					disabled={loading}
-				>
-					<option value="TODO">TODO</option>
-					<option value="IN_PROGRESS">IN_PROGRESS</option>
-					<option value="DONE">DONE</option>
-				</select>
 				<Button type="submit" disabled={loading || !title.trim()}>
 					{loading ? 'Sending...' : 'add'}
 				</Button>
