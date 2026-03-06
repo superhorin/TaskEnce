@@ -1,5 +1,4 @@
 import { useAppSelector } from "../../../app/hooks";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { TaskColumn } from "./TaskColumn";
 
 export const TaskList = () => {
