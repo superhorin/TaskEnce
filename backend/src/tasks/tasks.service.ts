@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateTaskDto } from './dto/create-task.dto';
+import { dateTimestampProvider } from 'rxjs/internal/scheduler/dateTimestampProvider';
 
 @Injectable()
 export class TasksService {
@@ -33,8 +34,10 @@ export class TasksService {
 			data: {
 				title:			dto.title,
 				description:	dto.description,
+				difficulty:		dto.difficulty,
+				duration:		dto.duration,
 				priority:		dto.priority,
-				status:			dto.status,
+				progress:		dto.progress,
 				authorId: 		defaultUser.id,
 				teamId: 		dto.teamId,
 			},

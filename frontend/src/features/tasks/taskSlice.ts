@@ -7,7 +7,7 @@ interface TaskState {
   loading: boolean;
 }
 
-export type CreateTaskPayload = Pick<Task, 'title' | 'description' | 'priority' | 'status'>;
+export type CreateTaskPayload = Pick<Task, 'title' | 'description' | 'difficulty' | 'duration' | 'priority' >;
 
 export const addTask= createAsyncThunk(
   'tasks/addTask',
