@@ -3,7 +3,7 @@ import { TaskColumn } from "./TaskColumn";
 
 export const TaskList = () => {
 
-	const tasks = useAppSelector(state => state.tasks.items);
+	const tasks = useAppSelector(state => state.tasks.tasks);
 	const loading = useAppSelector(state => state.tasks.loading);
 
 	return (

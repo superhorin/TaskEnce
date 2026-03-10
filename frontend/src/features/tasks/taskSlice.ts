@@ -3,9 +3,28 @@ import type { Task } from './task';
 import { API_URL } from '../../config/env';
 
 interface TaskState {
-  items: Task[];
+  tasks: Task[];
   loading: boolean;
 }
+
+export const updateTask = createAsyncThunk(
+  'tasks/updateTask',
+  async({ id, updates }: { id: string; updates: Partial<Task> }) => {
+    const res = await fetch(`${API_URL}/tasks/${id}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(updates),
+    });
+
+    if (!res.ok) {
+      throw new Error('server error: patch task');
+    }
+
+    return (await res.json()) as Task;
+  }
+)
 
 export type CreateTaskPayload = Pick<Task, 'title' | 'description' | 'difficulty' | 'duration' | 'priority' >;
 
@@ -13,7 +32,7 @@ export const addTask= createAsyncThunk(
   'tasks/addTask',
   async(taskData: CreateTaskPayload) => {
     const res = await fetch(`${API_URL}/tasks`, {
-      method: "POST",
+      method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
@@ -24,9 +43,7 @@ export const addTask= createAsyncThunk(
       throw new Error('server error: add task');
     }
 
-    const newTask: Task = await res.json();
-
-    return newTask;
+    return (await res.json()) as Task;
   }
 )
 
@@ -41,7 +58,7 @@ export const fetchTasks = createAsyncThunk(
 )
 
 const initialState: TaskState = {
-  items: [],
+  tasks: [],
   loading: false,
 };
 
@@ -60,7 +77,7 @@ export const taskSlice = createSlice({
       })
       .addCase(fetchTasks.fulfilled, (state, action) => {
         state.loading = false;
-        state.items = action.payload;
+        state.tasks = action.payload;
       })
       .addCase(fetchTasks.rejected, (state, action) => {
         state.loading = false;
@@ -72,11 +89,18 @@ export const taskSlice = createSlice({
       })
       .addCase(addTask.fulfilled, (state, action) => {
         state.loading = false;
-        state.items.unshift(action.payload);
+        state.tasks.unshift(action.payload);
       })
       .addCase(addTask.rejected, (state, action) => {
         state.loading = false;
         console.error('Send error:', action.error.message);
+      })
+
+      .addCase(updateTask.fulfilled, (state, action) => {
+        const index = state.tasks.findIndex(t => t.id === action.payload.id);
+        if (index !== -1) {
+          state.tasks[index] = action.payload;
+        }
       });
   }
 });
