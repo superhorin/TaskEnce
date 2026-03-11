@@ -24,8 +24,9 @@ export class TasksService {
 		if (!defaultUser) {
 			defaultUser = await this.prisma.user.create({
 				data: {
-					name: 'Guest User',
-					email: 'guest@example.com',
+					name:		'Guest User',
+					email:		'guest@example.com',
+					password:	'xxxxxxxxxxxx',
 				},
 			});
 			this.logger.log(`created dummy user: ${defaultUser}`);
