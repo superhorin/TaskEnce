@@ -41,6 +41,7 @@ export class TasksService {
 				progress:		dto.progress,
 				authorId: 		defaultUser.id,
 				teamId: 		dto.teamId,
+				dueDate:		dto.dueDate,
 			},
 			include: {
 				author: true,
