@@ -14,7 +14,7 @@ export const TaskForm = () => {
 	const [duration, setDuration] = useState<Duration>('STANDARD');
 	const [priority, setPriority] = useState<Priority>('NORMAL');
 
-	const handleSubmit = async(e: React.FormEvent) => {
+	const handleSubmit = async(e: React.SubmitEvent) => {
 		e.preventDefault();
 		if (!title.trim()) return;
 
