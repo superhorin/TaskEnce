@@ -26,7 +26,7 @@ export const updateTask = createAsyncThunk(
   }
 )
 
-export type CreateTaskPayload = Pick<Task, 'title' | 'description' | 'difficulty' | 'duration' | 'priority' >;
+export type CreateTaskPayload = Pick<Task, 'title' | 'description' | 'difficulty' | 'duration' | 'priority' | 'dueDate'>;
 
 export const addTask= createAsyncThunk(
   'tasks/addTask',
