@@ -3,6 +3,7 @@ import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import { addTask } from "../taskSlice";
 import { Button } from "@/components/ui/button";
 import type { Difficulty, Duration, Priority } from "../task";
+import { TaskCalendar } from "./TaskCalendar";
 
 export const TaskForm = () => {
 	const dispatch = useAppDispatch();
@@ -13,6 +14,8 @@ export const TaskForm = () => {
 	const [difficulty, setDifficulty] = useState<Difficulty>('SIMPLE');
 	const [duration, setDuration] = useState<Duration>('STANDARD');
 	const [priority, setPriority] = useState<Priority>('NORMAL');
+	const [date, setDate] = useState<Date | undefined>(new Date());
+	const [currentMonth, setCurrentMonth] = useState<Date>(new Date());
 
 	const handleSubmit = async(e: React.SubmitEvent) => {
 		e.preventDefault();
@@ -24,12 +27,15 @@ export const TaskForm = () => {
 			difficulty,
 			duration,
 			priority,
+            dueDate: date?.toISOString(),
 		}));
 		setTitle('');
 		setDescription('');
 		setDifficulty('SIMPLE');
 		setDuration('STANDARD');
 		setPriority('NORMAL');
+        setDate(new Date());
+        setCurrentMonth(new Date());
 	};
 
 	return (
@@ -114,6 +120,10 @@ export const TaskForm = () => {
                             <option value="CRITICAL">Critical</option>
                         </select>
                     </div>
+                </div>
+
+                <div>
+                    <TaskCalendar date={date} setDate={setDate} currentMonth={currentMonth} setCurrentMonth={setCurrentMonth} />
                 </div>
 
 				<div className="pt-2 flex justify-end">

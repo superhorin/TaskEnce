@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Priority, Difficulty, Duration } from "@prisma/client";
-import { IsString, IsOptional, IsEnum, IsNotEmpty, IsInt, Min } from "class-validator";
+import { IsString, IsOptional, IsEnum, IsNotEmpty, IsInt, Min, IsDateString } from "class-validator";
 
 export class CreateTaskDto {
 	@ApiProperty({
@@ -40,4 +40,8 @@ export class CreateTaskDto {
 	@IsOptional()
 	@IsString()
 	teamId?:		string;
+
+	@IsOptional()
+	@IsDateString()
+	dueDate?:		string;
 }
