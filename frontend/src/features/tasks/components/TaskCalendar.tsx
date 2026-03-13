@@ -56,7 +56,12 @@ export const TaskCalendar = ({ date, setDate, currentMonth, setCurrentMonth }: T
 				<div className="flex flex-col">
 					<div className="flex flex-wrap gap-2 border-b p-3">
 						{[{ label: "Today", value: 0 }, {label: "Tomorrow", value: 1}].map((preset) => (
-							<Button key={preset.value} variant="outline" size="sm" onClick={() => handlePresetClick(preset.value)}>
+							<Button 
+								key={preset.value}
+								type="button"
+								variant="outline"
+								size="sm"
+								onClick={() => handlePresetClick(preset.value)}>
 								{preset.label}
 							</Button>
 						))}
@@ -85,6 +90,7 @@ export const TaskCalendar = ({ date, setDate, currentMonth, setCurrentMonth }: T
 								{Array.from({ length: 24 }).map((_, i) => (
 									<Button
 										key={i}
+										type="button"
 										variant={date?.getHours() === i ? "default" : "ghost"}
 										className="h-8 w-full text-xs"
 										onClick={() => handleTimeChange("hour", i.toString())}
@@ -99,6 +105,7 @@ export const TaskCalendar = ({ date, setDate, currentMonth, setCurrentMonth }: T
 								{[0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55].map((min) => (
 									<Button
 										key={min}
+										type="button"
 										variant={date?.getMinutes() === min ? "default" : "ghost"}
 										className="h-8 w-full text-xs"
 										onClick={() => handleTimeChange("minute", min.toString())}
