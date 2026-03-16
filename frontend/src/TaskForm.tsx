@@ -1,5 +1,6 @@
 import React, {useState} from "react";
-import type { Task } from "./App";
+import type { Task } from "./types/task";
+import { API_URL } from "./config/env";
 
 type TaskFormProps = {
 	tasks: Task[];
@@ -16,7 +17,7 @@ export default function TaskForm({ tasks, setTasks }: TaskFormProps) {
 		setLoading(true);
 
 		try {
-			const response = await fetch('http://localhost:3000/tasks', {
+			const response = await fetch(`${API_URL}/tasks`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
