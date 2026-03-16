@@ -30,6 +30,7 @@ cd TaskEnce
 ```
 Bash
 cd backend
+(mise trust)
 npm install
 cp .env.example .env
 ```
@@ -44,6 +45,7 @@ npm run start:dev
 ```
 Bash
 cd frontend
+(mise trust)
 npm install
 npm run dev
 ```
