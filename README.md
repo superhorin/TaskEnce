@@ -30,13 +30,15 @@ cd TaskEnce
 ```
 Bash
 cd backend
+(mise trust)
 npm install
 cp .env.example .env
 ```
 .envに任意の変数を入力
 ```
 docker-compose up -d
-npm run start:dev
+npm run dev #初回起動
+npm run start:dev #２回目以降
 ```
 
 ### フロントエンドの起動
@@ -44,6 +46,7 @@ npm run start:dev
 ```
 Bash
 cd frontend
+(mise trust)
 npm install
 npm run dev
 ```
