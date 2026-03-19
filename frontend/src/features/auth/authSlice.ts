@@ -1,4 +1,6 @@
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import type { AuthState } from "./auth";
+import { API_URL } from "@/config/env";
 
 const	initialState: AuthState = {
 	user:		null,
@@ -7,4 +9,59 @@ const	initialState: AuthState = {
 	error:		null,
 }
 
+export const loginUser = createAsyncThunk(
+	'auth/loginUser',
+	async (credentials: { email: string; password: string }, {rejectWithValue}) => {
+		try {
+			const res = await fetch(`${API_URL}/auth/login`, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify(credentials),
+			});
 
+			if (!res.ok) {
+				const errorData = await res.json();
+				return rejectWithValue(errorData.message || 'login failed.');
+			}
+
+			const data = await res.json();
+
+			localStorage.setItem('token', data.accessToken);
+
+			return data;
+		} catch (error: any) {
+			return rejectWithValue(error.message);
+		}
+	}
+);
+
+export const authSlice = createSlice({
+	name: 'auth',
+	initialState,
+	reducers: {
+		logout: (state) => {
+			state.user = null;
+			state.token = null;
+			localStorage.removeItem('token');
+		},
+	},
+	extraReducers: (builder) => {
+		builder
+			.addCase(loginUser.pending, (state) => {
+				state.loading = true;
+				state.error = null;
+			})
+			.addCase(loginUser.fulfilled, (state, action) => {
+				state.loading = false;
+				state.user = action.payload.user;
+				state.token = action.payload.accessToken;
+			})
+			.addCase(loginUser.rejected, (state, action) => {
+				state.loading = false;
+				state.error = action.payload as string;
+			});
+	},
+});
+
+export const { logout } = authSlice.actions;
+export default authSlice.reducer;
