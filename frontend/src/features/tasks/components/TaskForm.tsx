@@ -21,21 +21,25 @@ export const TaskForm = () => {
 		e.preventDefault();
 		if (!title.trim()) return;
 
-		dispatch(addTask({
-			title,
-			description,
-			difficulty,
-			duration,
-			priority,
-            dueDate: date?.toISOString(),
-		}));
-		setTitle('');
-		setDescription('');
-		setDifficulty('SIMPLE');
-		setDuration('STANDARD');
-		setPriority('NORMAL');
-        setDate(new Date());
-        setCurrentMonth(new Date());
+        try {
+            await dispatch(addTask({
+                title,
+                description,
+                difficulty,
+                duration,
+                priority,
+                dueDate: date?.toISOString(),
+            })).unwrap();
+            setTitle('');
+            setDescription('');
+            setDifficulty('SIMPLE');
+            setDuration('STANDARD');
+            setPriority('NORMAL');
+            setDate(new Date());
+            setCurrentMonth(new Date());
+        } catch (err) {
+            console.error('adding task failed', err);
+        }
 	};
 
 	return (
