@@ -1,12 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit';
 import taskReducer from '../features/tasks/taskSlice';
+import authReducer from '../features/auth/authSlice';
 
 export const store = configureStore({
   reducer: {
-    tasks: taskReducer, // ここにスライスを登録していく
+    tasks:  taskReducer,
+    auth:   authReducer,
   },
 });
 
-// TypeScript用の型定義（これをしておくと後で楽になります）
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
