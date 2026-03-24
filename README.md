@@ -30,9 +30,9 @@ cd TaskEnce
 ```
 Bash
 cd backend
-(mise trust)
+mise trust
 npm install
-cp .env.example .env
+cp .env.local .env
 ```
 .envに任意の変数を入力
 ```
@@ -46,7 +46,7 @@ npm run start:dev #２回目以降
 ```
 Bash
 cd frontend
-(mise trust)
+mise trust
 npm install
 npm run dev
 ```
