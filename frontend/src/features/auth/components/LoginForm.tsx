@@ -1,4 +1,4 @@
-import { useAppDispatch, useAppSelector } from "@/app/hooks"
+import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { Button } from "@/components/ui/button";
 import React, { useState } from "react";
 import { loginUser } from "../authSlice";
