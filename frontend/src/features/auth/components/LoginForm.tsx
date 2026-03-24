@@ -2,11 +2,12 @@ import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { Button } from "@/components/ui/button";
 import React, { useState } from "react";
 import { loginUser } from "../authSlice";
+import { useNavigate } from "react-router-dom";
 
 export const LoginForm = () => {
 	const dispatch = useAppDispatch();
-
 	const { loading, error } = useAppSelector(state => state.auth);
+	const navigate = useNavigate();
 
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
@@ -20,6 +21,7 @@ export const LoginForm = () => {
 			await dispatch(loginUser({ email, password })).unwrap();
 
 			console.log("Login");
+			navigate('/tasks');
 		} catch (err) {
 			console.error("login failed", err);
 		}
