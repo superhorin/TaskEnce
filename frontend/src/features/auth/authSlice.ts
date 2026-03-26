@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import type { AuthState } from "./auth";
 import { API_URL } from "@/config/env";
+import api from '@/lib/api';
 
 const	initialState: AuthState = {
 	user:		null,
@@ -13,24 +14,13 @@ export const loginUser = createAsyncThunk(
 	'auth/loginUser',
 	async (credentials: { email: string; password: string }, {rejectWithValue}) => {
 		try {
-			const res = await fetch(`${API_URL}/auth/login`, {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify(credentials),
-			});
+			const res = await api.post('/auth/login', credentials);
 
-			if (!res.ok) {
-				const errorData = await res.json();
-				return rejectWithValue(errorData.message || 'login failed.');
-			}
+			localStorage.setItem('token', res.data.accessToken);
 
-			const data = await res.json();
-
-			localStorage.setItem('token', data.accessToken);
-
-			return data;
+			return res.data;
 		} catch (error: any) {
-			return rejectWithValue(error.message);
+			return rejectWithValue(error.response?.data?.message || 'failed at login');
 		}
 	}
 );
