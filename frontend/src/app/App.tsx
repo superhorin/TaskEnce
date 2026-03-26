@@ -4,6 +4,7 @@ import { ProtectedRoute } from '@/features/auth/ProtectedRoute';
 import { LoginPage } from '@/pages/LoginPage';
 import { MainLayout } from '@/layouts/MainLayout';
 import { PublicRoute } from '@/features/auth/PublicRoute';
+import { RegisterPage } from '@/pages/RegisterPage';
 
 function App() {
   return (
@@ -20,6 +21,8 @@ function App() {
             <Route path="/profile" element={<ProfilePage />} /> */}
           </Route>
         </Route>
+
+        <Route path="/register" element={<RegisterPage />} />
 
         <Route path="*" element={<Navigate replace to="/tasks" />} />
       </Routes>
