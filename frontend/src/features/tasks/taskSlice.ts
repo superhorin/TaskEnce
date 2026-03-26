@@ -1,6 +1,6 @@
-import { createAsyncThunk, createSlice, isAction, type PayloadAction } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import type { Task } from './task';
-import { API_URL } from '../../config/env';
+import api from '@/lib/api';
 
 interface TaskState {
   tasks: Task[];
@@ -9,20 +9,14 @@ interface TaskState {
 
 export const updateTask = createAsyncThunk(
   'tasks/updateTask',
-  async({ id, updates }: { id: string; updates: Partial<Task> }) => {
-    const res = await fetch(`${API_URL}/tasks/${id}`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(updates),
-    });
+  async({ id, updates }: { id: string; updates: Partial<Task> }, { rejectWithValue }) => {
+    try {
+      const res = await api.patch(`/tasks/${id}`, updates);
 
-    if (!res.ok) {
-      throw new Error('server error: patch task');
+      return res.data;
+    } catch(error: any) {
+      return rejectWithValue(error.response?.data?.message || 'failed at patching task');
     }
-
-    return (await res.json()) as Task;
   }
 )
 
@@ -30,30 +24,27 @@ export type CreateTaskPayload = Pick<Task, 'title' | 'description' | 'difficulty
 
 export const addTask= createAsyncThunk(
   'tasks/addTask',
-  async(taskData: CreateTaskPayload) => {
-    const res = await fetch(`${API_URL}/tasks`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(taskData),
-    });
+  async(taskData: CreateTaskPayload, { rejectWithValue }) => {
+    try {
+      const res = await api.post('/tasks', taskData);
 
-    if (!res.ok) {
-      throw new Error('server error: add task');
+      return res.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || 'failed at adding task');
     }
-
-    return (await res.json()) as Task;
   }
 )
 
 export const fetchTasks = createAsyncThunk(
   'tasks/fetchTasks',
-  async() => {
-    const res = await fetch(`${API_URL}/tasks`);
-    const data = await res.json();
+  async(_,{ rejectWithValue }) => {
+    try {
+      const res = await api.get('/tasks');
 
-    return data;
+      return res.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || 'failed at fetching tasks');
+    }
   }
 )
 
