@@ -37,7 +37,19 @@ export const registerUser = createAsyncThunk(
 			return rejectWithValue(error.response?.data?.message || 'failed at register');
 		}
 	}
-)
+);
+
+export const fetchCurrentUser = createAsyncThunk(
+	'auth/fetchCurrentUser',
+	async(_, { rejectWithValue }) => {
+		try {
+			const res = await api.get('/auth/me');
+			return res.data;
+		} catch (error: any) {
+			return rejectWithValue(error.response?.data?.message || 'failed to fetch profile');
+		}
+	}
+);
 
 export const authSlice = createSlice({
 	name: 'auth',
@@ -76,6 +88,20 @@ export const authSlice = createSlice({
 			.addCase(registerUser.rejected, (state, action) => {
 				state.loading = false;
 				state.error = action.payload as string;
+			})
+			.addCase(fetchCurrentUser.pending, (state) => {
+				state.loading = true;
+				state.error = null;
+			})
+			.addCase(fetchCurrentUser.fulfilled, (state, action) => {
+				state.loading = false;
+				state.user = action.payload;
+			})
+			.addCase(fetchCurrentUser.rejected, (state) => {
+				state.loading = false;
+				state.user = null;
+				state.token = null;
+				localStorage.removeItem('token');
 			});
 	},
 });
