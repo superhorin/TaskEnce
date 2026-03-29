@@ -8,6 +8,12 @@ generator client {
   provider = "prisma-client-js"
 }
 
+generator markdown {
+  provider = "prisma-markdown"
+  output   = "../../docs/ERD.md"
+  title    = "ER図"
+}
+
 datasource db {
   provider = "postgresql"
 }
