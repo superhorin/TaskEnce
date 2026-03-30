@@ -44,6 +44,8 @@ docker-compose up -d
 npm run dev #初回起動
 npm run start:dev #２回目以降
 ```
+run devはdb:syncとstart:devの両方を行います。
+prisma.schemaに変更があった場合は、db:syncでマイグレーションが行われます。
 
 ### フロントエンドの起動
 別のターミナルを開き、Reactの開発サーバーを起動します。
