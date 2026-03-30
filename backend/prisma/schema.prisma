@@ -42,6 +42,24 @@ enum Priority {
   CRITICAL
 }
 
+enum ThreadStatus {
+  OPEN
+  DONE
+}
+
+enum  TeamRole {
+  OWNER
+  ADMIN
+  MEMBER
+  GUEST
+}
+
+enum MembershipStatus {
+  INVITED
+  ACTIVE 
+  SUSPENDED
+}
+
 model User {
   id    String  @id @default(uuid())
   name  String
@@ -49,15 +67,23 @@ model User {
   email     String  @unique
   password  String
 
+  iconUrl String?
+
   level Int @default(0)
   exp   Int @default(0)
 
-  createdTasks  Task[]   @relation("TaskAuthor")
-  assignedTasks Task[]   @relation("TaskAssignee")
-  achievedTasks Task[]   @relation("TaskAchiever")
+  createdTasks      Task[]  @relation("TaskAuthor")
+  assignedTasks     Task[]  @relation("TaskAssignee")
+  contributedTasks  Task[]  @relation("TaskContributors")
 
-  teams     Team[]
-  createdAt DateTime  @default(now())
+  teamMemberships TeamMember[]
+
+  chatThreads ChatThread[]  @relation("ThreadMembers")
+
+  messages  Message[]
+
+  createdAt     DateTime  @default(now())
+  lastActiveAt  DateTime  @default(now())
 }
 
 model Team {
@@ -68,7 +94,8 @@ model Team {
   exp   Int @default(0)
 
   tasks Task[]
-  users User[]
+
+  members TeamMember[]
 }
 
 model Task {
@@ -88,8 +115,16 @@ model Task {
   assigneeId  String?
   assignee    User?     @relation("TaskAssignee", fields: [assigneeId], references: [id])
 
-  achieverId  String?
-  achiever    User?     @relation("TaskAchiever", fields: [achieverId], references: [id])
+  contributors User[]   @relation("TaskContributors")
+
+  parentTaskId  String?
+  parentTask    Task?   @relation("SubTasks", fields: [parentTaskId], references: [id])
+  subTasks      Task[]  @relation("SubTasks")
+
+  messages Message[] @relation("TaskMessages")
+
+  sourceMessageId String?
+  sourceMessage   Message? @relation("TaskFromMessage", fields: [sourceMessageId], references: [id])
 
   teamId      String?
   team        Team?     @relation(fields: [teamId], references: [id])
@@ -98,4 +133,61 @@ model Task {
   updatedAt   DateTime  @updatedAt
   achievedAt  DateTime?
   dueDate     DateTime?
+}
+
+model ChatThread {
+  id      String        @id @default(uuid())
+  title   String
+  status    ThreadStatus  @default(OPEN)
+  priority  Priority    @default(NORMAL)
+
+  members   User[]  @relation("ThreadMembers")
+  messages  Message[]
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Message {
+  id    String  @id @default(uuid())
+  text  String
+
+  senderId  String
+  sender    User  @relation(fields: [senderId], references: [id])
+
+  threadId  String?
+  thread    ChatThread? @relation(fields: [threadId], references: [id], onDelete: Cascade)
+
+  taskId  String?
+  task    Task? @relation("TaskMessages", fields: [taskId], references: [id], onDelete: Cascade)
+
+  derivedTasks  Task[]  @relation("TaskFromMessage")
+
+  createdAt DateTime  @default(now())
+}
+
+model TeamMember {
+  id  String  @id @default(uuid())
+
+  role    TeamRole  @default(MEMBER)
+  status  MembershipStatus  @default(INVITED)
+
+  nickname  String?
+  position  String?
+  isMuted   Boolean @default(false)
+
+  teamExp   Int @default(0)
+  teamLevel Int @default(0)
+
+  userId  String
+  user    User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  teamId  String
+  team    Team  @relation(fields: [teamId], references: [id])
+
+  createdAt DateTime  @default(now())
+  joinedAt  DateTime?
+  updatedAt DateTime  @updatedAt
+
+  @@unique([userId, teamId])
 }
