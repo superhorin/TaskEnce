@@ -44,6 +44,8 @@ docker-compose up -d
 npm run dev #初回起動
 npm run start:dev #２回目以降
 ```
+開発中のため、devコマンドで、schema.prisma の状態を直接DBに反映させ、seedを投入しています
+起動のみはstart:devでできます
 
 ### フロントエンドの起動
 別のターミナルを開き、Reactの開発サーバーを起動します。

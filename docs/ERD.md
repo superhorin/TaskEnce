@@ -12,25 +12,96 @@ erDiagram
   String id PK
   String name
   String email UK
+  String password
+  String iconUrl "nullable"
+  Int level
+  Int exp
   DateTime createdAt
+  DateTime lastActiveAt
 }
 "Team" {
   String id PK
   String name
+  Int level
+  Int exp
 }
 "Task" {
   String id PK
   String title
   String description "nullable"
+  Difficulty difficulty
+  Duration duration
   Priority priority
-  Status status
+  Int progress
   String authorId FK
+  String assigneeId FK "nullable"
+  String parentTaskId FK "nullable"
+  String sourceMessageId FK "nullable"
   String teamId FK "nullable"
   DateTime createdAt
   DateTime updatedAt
+  DateTime achievedAt "nullable"
+  DateTime dueDate "nullable"
+}
+"ChatThread" {
+  String id PK
+  String title
+  ThreadStatus status
+  Priority priority
+  DateTime createdAt
+  DateTime updatedAt
+}
+"Message" {
+  String id PK
+  String text
+  String senderId FK
+  String threadId FK "nullable"
+  String taskId FK "nullable"
+  DateTime createdAt
+}
+"TeamMember" {
+  String id PK
+  TeamRole role
+  MembershipStatus status
+  String nickname "nullable"
+  String position "nullable"
+  Boolean isMuted
+  Int teamExp
+  Int teamLevel
+  String userId FK
+  String teamId FK
+  DateTime createdAt
+  DateTime joinedAt "nullable"
+  DateTime updatedAt
+}
+"_TaskToUser" {
+  String A FK
+  String B FK
+}
+"_ChatThreadToUser" {
+  String A FK
+  String B FK
+}
+"_MessageToTask" {
+  String A FK
+  String B FK
 }
 "Task" }o--|| "User" : author
+"Task" }o--o| "User" : assignee
+"Task" }o--o| "Task" : parentTask
+"Task" }o--o| "Message" : sourceMessage
 "Task" }o--o| "Team" : team
+"Message" }o--|| "User" : sender
+"Message" }o--o| "ChatThread" : thread
+"Message" }o--o| "Task" : task
+"TeamMember" }o--|| "User" : user
+"TeamMember" }o--|| "Team" : team
+"_TaskToUser" }o--|| "Task" : Task
+"_TaskToUser" }o--|| "User" : User
+"_ChatThreadToUser" }o--|| "ChatThread" : ChatThread
+"_ChatThreadToUser" }o--|| "User" : User
+"_MessageToTask" }o--|| "Message" : Message
+"_MessageToTask" }o--|| "Task" : Task
 ```
 
 ### `User`
@@ -40,7 +111,12 @@ Properties as follows:
 - `id`:
 - `name`:
 - `email`:
+- `password`:
+- `iconUrl`:
+- `level`:
+- `exp`:
 - `createdAt`:
+- `lastActiveAt`:
 
 ### `Team`
 
@@ -48,6 +124,8 @@ Properties as follows:
 
 - `id`:
 - `name`:
+- `level`:
+- `exp`:
 
 ### `Task`
 
@@ -56,9 +134,83 @@ Properties as follows:
 - `id`:
 - `title`:
 - `description`:
+- `difficulty`:
+- `duration`:
 - `priority`:
-- `status`:
+- `progress`:
 - `authorId`:
+- `assigneeId`:
+- `parentTaskId`:
+- `sourceMessageId`:
 - `teamId`:
 - `createdAt`:
 - `updatedAt`:
+- `achievedAt`:
+- `dueDate`:
+
+### `ChatThread`
+
+Properties as follows:
+
+- `id`:
+- `title`:
+- `status`:
+- `priority`:
+- `createdAt`:
+- `updatedAt`:
+
+### `Message`
+
+Properties as follows:
+
+- `id`:
+- `text`:
+- `senderId`:
+- `threadId`:
+- `taskId`:
+- `createdAt`:
+
+### `TeamMember`
+
+Properties as follows:
+
+- `id`:
+- `role`:
+- `status`:
+- `nickname`:
+- `position`:
+- `isMuted`:
+- `teamExp`:
+- `teamLevel`:
+- `userId`:
+- `teamId`:
+- `createdAt`:
+- `joinedAt`:
+- `updatedAt`:
+
+### `_TaskToUser`
+
+Pair relationship table between [Task](#Task) and [User](#User)
+
+Properties as follows:
+
+- `A`:
+- `B`:
+
+### `_ChatThreadToUser`
+
+Pair relationship table between [ChatThread](#ChatThread) and [User](#User)
+
+Properties as follows:
+
+- `A`:
+- `B`:
+
+### `_MessageToTask`
+
+Pair relationship table between [Message](#Message) and [Task](#Task)
+
+Properties as follows:
+
+- `A`:
+- `B`:

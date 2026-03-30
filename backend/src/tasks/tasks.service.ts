@@ -17,7 +17,6 @@ export class TasksService {
 				OR: [
 					{ authorId: user.id },
 					{ assigneeId: user.id },
-					{ achieverId: user.id },
 				],
 			},
 			orderBy: { createdAt: 'desc' },
