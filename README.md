@@ -41,11 +41,16 @@ cp .env.local .env
 .envに任意の変数を入力
 ```
 docker-compose up -d
-npm run dev #初回起動
+npm run dev #初回起動（db:sync && start:dev）
 npm run start:dev #２回目以降
 ```
-run devはdb:syncとstart:devの両方を行います。
-prisma.schemaに変更があった場合は、db:syncでマイグレーションが行われます。
+
+### 🗄 データベースマイグレーションのルール
+本プロジェクトでは Prisma を使用しています。テーブルスキーマに変更を加える際は、以下の手順を厳守してください。
+- prisma/schema.prisma を編集する。
+- npm run db:sync を実行してマイグレーションファイルを生成する。これにより、DBへの反映と prisma/migrations フォルダ内へのSQLファイル生成が行われます。
+- 生成されたマイグレーションファイルを必ず含めて Git にコミットする。
+  - スキーマ変更後にマイグレーションファイルを生成（commit）せずにプッシュすると、他の開発者の環境でエラーが発生します。必ず db:sync を実行してからコミットしてください。
 
 ### フロントエンドの起動
 別のターミナルを開き、Reactの開発サーバーを起動します。
