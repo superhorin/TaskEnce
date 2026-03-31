@@ -1,35 +1,34 @@
-import { BadGatewayException, ConflictException, Injectable, UnauthorizedException } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { ConflictException, Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { RegisterDto } from './dto/register.dto';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { LoginDto } from './dto/login.dto';
+import { AuthRepository } from './auth.repository';
 
 @Injectable()
 export class AuthService {
+	private readonly logger = new Logger(AuthService.name);
 	constructor(
-		private prisma: PrismaService,
-		private jwtService: JwtService,
+		private readonly jwtService: JwtService,
+		private readonly authRepository: AuthRepository,
 	) {}
 
 	async register(dto: RegisterDto) {
-		const existingUser = await this.prisma.user.findUnique({
-			where: { email: dto.email },
-		});
+		const existingUser = await this.authRepository.findByEmail(dto.email);
 
 		if (existingUser) {
 			throw new ConflictException('this email user already exists');
 		}
 
-		const hashedPassword = await bcrypt.hash(dto.password, 10);
+		const	hashedPassword = await bcrypt.hash(dto.password, 10);
 
-		const newUser = await this.prisma.user.create({
-			data: {
-				name: dto.name,
-				email: dto.email,
-				password: hashedPassword,
-			},
-		});
+		const	userData = {
+			name: dto.name,
+			email: dto.email,
+			password: hashedPassword,
+		};
+
+		const newUser = await this.authRepository.create(userData);
 
 		const { password, ...userWithoutPassword } = newUser;
 		const payload = { sub: newUser.id, email: newUser.email };
@@ -40,9 +39,7 @@ export class AuthService {
 	}
 
 	async login(dto: LoginDto) {
-		const user = await this.prisma.user.findUnique({
-			where: {email: dto.email },
-		});
+		const user = await this.authRepository.findByEmail(dto.email);
 
 		if (!user) {
 			throw new UnauthorizedException('mail address or password is wrong.');

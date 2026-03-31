@@ -8,6 +8,7 @@ import { RegisterPage } from '@/pages/RegisterPage';
 import { useAppDispatch, useAppSelector } from './hooks';
 import { useEffect } from 'react';
 import { fetchCurrentUser } from '@/features/auth/authSlice';
+import { TaskDetailPage } from '@/pages/TaskDetailPage';
 
 function App() {
   const dispatch = useAppDispatch();
@@ -29,8 +30,8 @@ function App() {
         <Route element={<ProtectedRoute />}>
           <Route element={<MainLayout />}>
             <Route path="/tasks" element={<TaskPage />} />
-            {/* <Route path="/tasks/:id" element={<TaskDetailPage />} />
-            <Route path="/profile" element={<ProfilePage />} /> */}
+            <Route path="/tasks/:id" element={<TaskDetailPage />} />
+            {/* <Route path="/profile" element={<ProfilePage />} /> */}
           </Route>
         </Route>
 
