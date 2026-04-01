@@ -93,7 +93,14 @@ export const taskSlice = createSlice({
       })
       .addCase(fetchTaskById.fulfilled, (state, action) => {
         state.loading = false;
-        state.tasks.push(action.payload);
+        const fetchedTask = action.payload;
+        const existingIndex = state.tasks.findIndex(t => t.id === fetchedTask.id);
+
+        if (existingIndex !== -1) {
+          state.tasks[existingIndex] = fetchedTask;
+        } else {
+          state.tasks.push(action.payload);
+        }
       })
       .addCase(fetchTaskById.rejected, (state, action) => {
         state.loading = false;

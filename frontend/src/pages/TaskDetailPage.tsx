@@ -16,8 +16,12 @@ export const TaskDetailPage = () => {
 	const isLoading = useAppSelector(state => state.tasks.loading);
 
 	useEffect(() => {
-		if (!task && id) {
-			dispatch(fetchTaskById(id));
+		if (id) {
+			const needsFetch = !task || task.relatedThreadMessages === undefined;
+			console.log("needsFetch!!!!" + needsFetch);
+			if (needsFetch) {
+				dispatch(fetchTaskById(id));
+			}
 		}
 	}, [id, task, dispatch]);
 
@@ -58,7 +62,14 @@ export const TaskDetailPage = () => {
 
 			<div className="mt-12 p-6 bg-blue-50 border border-blue-100 rounded-lg">
 				<h3 className="text-lg font-bold text-blue-900 mb-2">Action Logs</h3>
-				<p className="text-blue-700 text-sm">Logs.....</p>
+				<ul>
+					{task.relatedThreadMessages?.map((message) => (
+						<li key={message.id} className="bg-white rounded-xl mb-3">
+							<p className="text-blue-700 text-xs">{message.sender.name}</p>
+							<p className="text-blue-700 text-sm">{message.text}</p>
+						</li>
+					))}
+				</ul>
 			</div>
 		</div>
 	)
