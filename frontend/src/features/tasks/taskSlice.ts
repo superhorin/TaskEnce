@@ -35,6 +35,19 @@ export const addTask= createAsyncThunk(
   }
 )
 
+export const fetchTaskById = createAsyncThunk(
+  'tasks/fetchTaskById',
+  async(id: string, { rejectWithValue }) => {
+    try {
+      const res = await api.get(`/tasks/${id}`);
+
+      return res.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || `failed at fetching task:${id}`);
+    }
+  }
+)
+
 export const fetchTasks = createAsyncThunk(
   'tasks/fetchTasks',
   async(_,{ rejectWithValue }) => {
@@ -74,6 +87,18 @@ export const taskSlice = createSlice({
         state.loading = false;
         console.log('通信エラー:', action.error.message);
       })
+      //fetchTaskById
+      .addCase(fetchTaskById.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchTaskById.fulfilled, (state, action) => {
+        state.loading = false;
+        state.tasks.push(action.payload);
+      })
+      .addCase(fetchTaskById.rejected, (state, action) => {
+        state.loading = false;
+        console.log('通信エラー:', action.error.message);
+      })
       //addTask
       .addCase(addTask.pending, (state) => {
         state.loading = true;
@@ -86,7 +111,7 @@ export const taskSlice = createSlice({
         state.loading = false;
         console.error('Send error:', action.error.message);
       })
-
+      //patchTask
       .addCase(updateTask.fulfilled, (state, action) => {
         const index = state.tasks.findIndex(t => t.id === action.payload.id);
         if (index !== -1) {

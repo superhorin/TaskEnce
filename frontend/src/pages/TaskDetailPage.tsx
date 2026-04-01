@@ -1,14 +1,29 @@
-import { useAppSelector } from "@/app/hooks";
+import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { Button } from "@/components/ui/button";
+import { fetchTaskById } from "@/features/tasks/taskSlice";
+import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom"
 
 export const TaskDetailPage = () => {
 	const { id } = useParams<{ id: string }>();
 	const navigate = useNavigate();
+	const dispatch = useAppDispatch();
 
 	const task = useAppSelector(state => 
 		state.tasks.tasks.find(t => t.id === id)
 	);
+
+	const isLoading = useAppSelector(state => state.tasks.loading);
+
+	useEffect(() => {
+		if (!task && id) {
+			dispatch(fetchTaskById(id));
+		}
+	}, [id, task, dispatch]);
+
+	if (isLoading) {
+        return <div className="text-center py-10">Loading task...</div>;
+    }
 
 	if (!task) {
 		return (
