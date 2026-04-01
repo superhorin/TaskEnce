@@ -2,6 +2,22 @@ import { Injectable } from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
 import { Prisma, Task } from "@prisma/client";
 
+const taskWithMessagesInclude = {
+	sourceMessage: {
+		include: {
+			thread: {
+				include: {
+				messages: true,
+				},
+			},
+		},
+	},
+} satisfies Prisma.TaskInclude;
+
+type TaskWithThreadMessages = Prisma.TaskGetPayload<{
+	include: typeof taskWithMessagesInclude;
+}>;
+
 @Injectable()
 export class TasksRepository {
 	constructor(private readonly prisma: PrismaService) {}
@@ -19,9 +35,23 @@ export class TasksRepository {
 		});
 	}
 
-	async	findById(id: string): Promise<Task | null> {
+	async	findById(id: string): Promise<TaskWithThreadMessages | null> {
 		return this.prisma.task.findUnique({
 			where: { id: id },
+			include: {
+				sourceMessage: {
+					include: {
+						thread: {
+							include: {
+								messages: {
+									orderBy: { createdAt: 'asc' },
+									include: { sender: true },
+								}
+							}
+						}
+					}
+				}
+			}
 		});
 	}
 

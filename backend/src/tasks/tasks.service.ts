@@ -16,7 +16,19 @@ export class TasksService {
 	}
 
 	async getTask(id: string) {
-		return this.tasksRepository.findById(id);
+		const task = await this.tasksRepository.findById(id);
+
+		if (!task) {
+			throw new Error("Task not found");
+		}
+
+		const threadMessages = task.sourceMessage?.thread?.messages || [];
+
+		return {
+			...task,
+			relatedThreadMessages: threadMessages,
+			sourceMessage: undefined,
+		};
 	}
 
 	async createTask(dto: CreateTaskDto, user: User) {

@@ -47,6 +47,7 @@ export const TaskDetailPage = () => {
 
 			<div className="flex gap-4 mb-8 text-sm text-slate-600">
 				<span className="bg-slate-100 px-3 py-1 rounded-full">{task.difficulty}</span>
+				<span className="bg-slate-100 px-3 py-1 rounded-full">{task.duration}</span>
 				<span className="bg-slate-100 px-3 py-1 rounded-full">{task.priority}</span>
 			</div>
 
