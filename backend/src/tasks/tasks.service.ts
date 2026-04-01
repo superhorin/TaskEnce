@@ -15,6 +15,10 @@ export class TasksService {
 		return this.tasksRepository.findTasksByUserId(user.id);
 	}
 
+	async getTask(id: string) {
+		return this.tasksRepository.findById(id);
+	}
+
 	async createTask(dto: CreateTaskDto, user: User) {
 		const	taskData = {
 			title:			dto.title,

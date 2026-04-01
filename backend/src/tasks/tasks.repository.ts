@@ -19,6 +19,12 @@ export class TasksRepository {
 		});
 	}
 
+	async	findById(id: string): Promise<Task | null> {
+		return this.prisma.task.findUnique({
+			where: { id: id },
+		});
+	}
+
 	async	findByIdAndAuthorId(id: string, authorId: string): Promise<Task | null> {
 		return this.prisma.task.findFirst({
 			where: {

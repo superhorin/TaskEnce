@@ -16,6 +16,11 @@ export class TasksController {
 		return this.taskService.getAllTasks(user);
 	}
 
+	@Get(':id')
+	getTask(@Param('id') id: string) {
+		return this.taskService.getTask(id);
+	} 
+
 	@Post()
 	createTask(@Body() dto: CreateTaskDto, @GetUser() user: User) {
 		return this.taskService.createTask(dto, user);
