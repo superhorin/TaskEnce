@@ -1,8 +1,9 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { TeamService } from './team.service';
 import { GetUser } from 'src/auth/get-user.decorator';
 import type { User } from '@prisma/client';
+import { CreateTeamDto } from './dto/create-team.dto';
 
 @UseGuards(AuthGuard('jwt'))
 @Controller('team')
@@ -12,5 +13,10 @@ export class TeamController {
 	@Get()
 	getTeams(@GetUser() user: User) {
 		return this.teamService.getAllTeams(user);
+	}
+
+	@Post()
+	createTeam(@Body() dto: CreateTeamDto, @GetUser() user: User) {
+		return this.teamService.create(dto, user);
 	}
 }

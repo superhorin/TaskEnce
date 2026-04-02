@@ -90,6 +90,8 @@ model Team {
   id    String  @id @default(uuid())
   name  String
 
+  iconUrl String?
+
   level Int @default(0)
   exp   Int @default(0)
 

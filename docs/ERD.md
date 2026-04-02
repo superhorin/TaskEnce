@@ -24,6 +24,7 @@ erDiagram
 "Team" {
   String id PK
   String name
+  String iconUrl "nullable"
   Int level
   Int exp
 }
@@ -128,6 +129,7 @@ Properties as follows:
 
 - `id`:
 - `name`:
+- `iconUrl`:
 - `level`:
 - `exp`:
 
