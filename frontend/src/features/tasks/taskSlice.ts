@@ -73,8 +73,8 @@ export const taskSlice = createSlice({
   reducers: {
 
   },
-  extraReducers: (builders) => {
-    builders
+  extraReducers: (builder) => {
+    builder
       //fetchTask
       .addCase(fetchTasks.pending, (state) => {
         state.loading = true;

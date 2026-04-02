@@ -1,5 +1,5 @@
 import type { Task } from "../tasks/task";
-import type { User } from "../users/user";
+import type { Member } from "./member";
 
 export interface Team {
 	id:		string;
@@ -8,6 +8,6 @@ export interface Team {
 	level:	number;
 	exp:	number;
 
-	tasks?:	Task[];
-	users?:	User[];
+	tasks:		Task[];
+	members:	Member[];
 }
