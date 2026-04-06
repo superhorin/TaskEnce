@@ -56,8 +56,9 @@ enum  TeamRole {
 
 enum MembershipStatus {
   INVITED
-  ACTIVE 
-  SUSPENDED
+  ACTIVE
+  BLOCKED
+  DECLINED
 }
 
 model User {
@@ -76,7 +77,8 @@ model User {
   assignedTasks     Task[]  @relation("TaskAssignee")
   contributedTasks  Task[]  @relation("TaskContributors")
 
-  teamMemberships TeamMember[]
+  memberships   Membership[]  @relation("UserMemberships")
+  invitedMember Membership[]  @relation("InviterMemberships")
 
   chatThreads ChatThread[]  @relation("ThreadMembers")
 
@@ -97,7 +99,7 @@ model Team {
 
   tasks Task[]
 
-  members TeamMember[]
+  members Membership[]
 }
 
 model Task {
@@ -168,7 +170,7 @@ model Message {
   createdAt DateTime  @default(now())
 }
 
-model TeamMember {
+model Membership {
   id  String  @id @default(uuid())
 
   role    TeamRole  @default(MEMBER)
@@ -182,10 +184,13 @@ model TeamMember {
   teamLevel Int @default(0)
 
   userId  String
-  user    User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user    User  @relation("UserMemberships", fields: [userId], references: [id], onDelete: Cascade)
 
   teamId  String
   team    Team  @relation(fields: [teamId], references: [id])
+
+  inviterId String?
+  inviter   User?  @relation("InviterMemberships", fields: [inviterId], references: [id])
 
   createdAt DateTime  @default(now())
   joinedAt  DateTime?

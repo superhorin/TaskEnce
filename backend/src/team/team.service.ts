@@ -23,16 +23,16 @@ export class TeamService {
 			teamId:	newTeam.id,
 		};
 
-		const newMemberShip = await this.teamRepository.createMemberShip(memberData);
+		const newMembership = await this.teamRepository.createMembership(memberData);
 
 		return {
 			newTeam,
-			teamMembership: newMemberShip,
+			teamMembership: newMembership,
 		};
 	}
 
 	async inviteUser(dto: InviteUserDto, user: User) {
-		const inviterMembership = await this.teamRepository.findTeamMemberByTeamIdAndUserId(dto.teamId, user.id);
+		const inviterMembership = await this.teamRepository.findMembershipByTeamIdAndUserId(dto.teamId, user.id);
 
 		if (!inviterMembership) {
 			throw new Error("not a team member.");
@@ -42,19 +42,51 @@ export class TeamService {
 			throw new Error("no permission.")
 		}
 
-		const existingMemberShip = await this.teamRepository.findTeamMemberByTeamIdAndUserId(dto.teamId, dto.userId);
+		const existingMembership = await this.teamRepository.findMembershipByTeamIdAndUserId(dto.teamId, dto.userId);
 
-		if (existingMemberShip) {
-			throw new Error("already exist.")
+		if (existingMembership) {
+			if (existingMembership.status !== MembershipStatus.DECLINED)
+				throw new Error("already exist.")
+
+			const membershipData = {
+				role:		TeamRole.MEMBER,
+				status:		MembershipStatus.INVITED,
+				userId:		dto.userId,
+				inviterId:	user.id,
+			}
+
+			return this.teamRepository.updateInvitation(existingMembership.id, membershipData);
 		}
 
-		const memberData = {
-			role:	TeamRole.MEMBER,
-			status:	MembershipStatus.INVITED,
-			userId:	dto.userId,
-			teamId:	dto.teamId,
+		const membershipData = {
+			role:		TeamRole.MEMBER,
+			status:		MembershipStatus.INVITED,
+			userId:		dto.userId,
+			teamId:		dto.teamId,
+			inviterId:	user.id,
 		}
 
-		return this.teamRepository.createMemberShip(memberData);
+		return this.teamRepository.createMembership(membershipData);
+	}
+
+	async respondToInvitation(membershipId: string, action: 'accept' | 'deny', user: User) {
+		const membership = await this.teamRepository.findMembershipById(membershipId);
+
+		if (!membership || membership.status !== MembershipStatus.INVITED || membership.userId !== user.id) {
+			throw new Error("no valid invitations");
+		}
+
+		if (action === 'accept') {
+			const actionData = {
+				status:	MembershipStatus.ACTIVE,
+				joinAt:	new Date(),
+			}
+			return this.teamRepository.updateInvitation(membershipId, actionData);
+		} else {
+			const actionData = {
+				status:	MembershipStatus.DECLINED,
+			}
+			return this.teamRepository.updateInvitation(membershipId, actionData);
+		}
 	}
 }

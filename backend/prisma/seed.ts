@@ -21,7 +21,7 @@ async function	main() {
 	await	prisma.message.deleteMany();
 	await	prisma.task.deleteMany();
 	await	prisma.chatThread.deleteMany();
-	await	prisma.teamMember.deleteMany();
+	await	prisma.membership.deleteMany();
 	await	prisma.team.deleteMany();
 	await	prisma.user.deleteMany();
 
@@ -42,7 +42,7 @@ async function	main() {
 		data: { name: 'Teat Team', level: 2, exp: 3000 },
 	});
 
-	await	prisma.teamMember.createMany({
+	await	prisma.membership.createMany({
 		data: [
 			{ userId: alice.id, teamId: devTeam.id, role: TeamRole.OWNER, status: MembershipStatus.ACTIVE, position: 'Tech Lead', joinedAt: new Date() },
 			{ userId: bob.id, teamId: devTeam.id, role: TeamRole.MEMBER, status: MembershipStatus.ACTIVE, position: 'Frontend Engineer', joinedAt: new Date() },

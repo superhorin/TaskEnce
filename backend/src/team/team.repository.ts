@@ -1,16 +1,22 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
-import { Team, TeamMember, User } from "@prisma/client";
+import { Team, Membership, User } from "@prisma/client";
 
 @Injectable()
 export class TeamRepository {
 	constructor(private readonly prisma: PrismaService) {}
 
-	async findTeamsByUserId(userId: string): Promise<TeamMember[]> {
-		return this.prisma.teamMember.findMany({
-			where: { userId: userId },
-			include: { team: true },
-			orderBy: { createdAt: 'asc' },
+	async findTeamsByUserId(userId: string): Promise<Membership[]> {
+		return this.prisma.membership.findMany({
+			where: {
+				userId: userId,
+			},
+			include: {
+				team: true,
+			},
+			orderBy: {
+				createdAt: 'asc',
+			},
 		})
 	}
 
@@ -20,20 +26,37 @@ export class TeamRepository {
 		});
 	}
 
-	async createMemberShip(data: any): Promise<TeamMember> {
-		return this.prisma.teamMember.create({
+	async createMembership(data: any): Promise<Membership> {
+		return this.prisma.membership.create({
 			data: data,
 		});
 	}
 
-	async findTeamMemberByTeamIdAndUserId(teamId: string, userId: string): Promise<TeamMember | null> {
-		return this.prisma.teamMember.findUnique({
+	async findMembershipByTeamIdAndUserId(teamId: string, userId: string): Promise<Membership | null> {
+		return this.prisma.membership.findUnique({
 			where: {
 				userId_teamId: {
 					userId: userId,
 					teamId: teamId,
 				},
 			},
+		});
+	}
+
+	async findMembershipById(membershipId: string): Promise<Membership | null> {
+		return this.prisma.membership.findUnique({
+			where: {
+				id: membershipId,
+			},
+		});
+	}
+
+	async updateInvitation(membershipId: string, data: any): Promise<Membership> {
+		return this.prisma.membership.update({
+			where: {
+				id: membershipId,
+			},
+			data: data,
 		});
 	}
 }

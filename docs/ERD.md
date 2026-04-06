@@ -64,7 +64,7 @@ erDiagram
   String taskId FK "nullable"
   DateTime createdAt
 }
-"TeamMember" {
+"Membership" {
   String id PK
   TeamRole role
   MembershipStatus status
@@ -75,6 +75,7 @@ erDiagram
   Int teamLevel
   String userId FK
   String teamId FK
+  String inviterId FK "nullable"
   DateTime createdAt
   DateTime joinedAt "nullable"
   DateTime updatedAt
@@ -99,8 +100,9 @@ erDiagram
 "Message" }o--|| "User" : sender
 "Message" }o--o| "ChatThread" : thread
 "Message" }o--o| "Task" : task
-"TeamMember" }o--|| "User" : user
-"TeamMember" }o--|| "Team" : team
+"Membership" }o--|| "User" : user
+"Membership" }o--|| "Team" : team
+"Membership" }o--o| "User" : inviter
 "_TaskToUser" }o--|| "Task" : Task
 "_TaskToUser" }o--|| "User" : User
 "_ChatThreadToUser" }o--|| "ChatThread" : ChatThread
@@ -176,7 +178,7 @@ Properties as follows:
 - `taskId`:
 - `createdAt`:
 
-### `TeamMember`
+### `Membership`
 
 Properties as follows:
 
@@ -190,6 +192,7 @@ Properties as follows:
 - `teamLevel`:
 - `userId`:
 - `teamId`:
+- `inviterId`:
 - `createdAt`:
 - `joinedAt`:
 - `updatedAt`:

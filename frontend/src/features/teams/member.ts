@@ -2,7 +2,7 @@ import type { User } from "../users/user";
 import type { Team } from "./team";
 
 export type TeamRole = 'OWNER' | 'ADMIN' | 'MEMBER' | 'GUEST';
-export type MembershipStatus = 'INVITED' | 'ACTIVE' | 'SUSPENDED';
+export type MembershipStatus = 'INVITED' | 'ACTIVE' | 'BLOCKED' | 'DECLINED';
 
 export interface Member {
 	id:			string;
