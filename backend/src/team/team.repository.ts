@@ -25,4 +25,15 @@ export class TeamRepository {
 			data: data,
 		});
 	}
+
+	async findTeamMemberByTeamIdAndUserId(teamId: string, userId: string): Promise<TeamMember | null> {
+		return this.prisma.teamMember.findUnique({
+			where: {
+				userId_teamId: {
+					userId: userId,
+					teamId: teamId,
+				},
+			},
+		});
+	}
 }

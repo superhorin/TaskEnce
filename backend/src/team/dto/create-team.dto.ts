@@ -9,3 +9,13 @@ export class CreateTeamDto {
 	@IsString()
 	iconUrl:	string
 }
+
+export class InviteUserDto {
+	@IsString()
+	@IsNotEmpty()
+	teamId:		string
+
+	@IsString()
+	@IsNotEmpty()
+	userId:		string
+}

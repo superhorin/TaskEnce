@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { TeamRepository } from './team.repository';
 import { MembershipStatus, TeamRole, type User } from '@prisma/client';
-import { CreateTeamDto } from './dto/create-team.dto';
+import { CreateTeamDto, InviteUserDto } from './dto/create-team.dto';
 
 @Injectable()
 export class TeamService {
@@ -29,5 +29,32 @@ export class TeamService {
 			newTeam,
 			teamMembership: newMemberShip,
 		};
+	}
+
+	async inviteUser(dto: InviteUserDto, user: User) {
+		const inviterMembership = await this.teamRepository.findTeamMemberByTeamIdAndUserId(dto.teamId, user.id);
+
+		if (!inviterMembership) {
+			throw new Error("not a team member.");
+		}
+
+		if (inviterMembership.role !== TeamRole.ADMIN && inviterMembership.role !== TeamRole.OWNER) {
+			throw new Error("no permission.")
+		}
+
+		const existingMemberShip = await this.teamRepository.findTeamMemberByTeamIdAndUserId(dto.teamId, dto.userId);
+
+		if (existingMemberShip) {
+			throw new Error("already exist.")
+		}
+
+		const memberData = {
+			role:	TeamRole.MEMBER,
+			status:	MembershipStatus.INVITED,
+			userId:	dto.userId,
+			teamId:	dto.teamId,
+		}
+
+		return this.teamRepository.createMemberShip(memberData);
 	}
 }
