@@ -32,15 +32,14 @@ erDiagram
   String id PK
   String title
   String description "nullable"
+  TaskType type
   Difficulty difficulty
   Duration duration
   Priority priority
   Int progress
   String authorId FK
   String assigneeId FK "nullable"
-
-  String parentTaskId FK "nullable"
-  String sourceMessageId FK "nullable"
+  String chatThreadId FK "nullable"
   String teamId FK "nullable"
   DateTime createdAt
   DateTime updatedAt
@@ -48,20 +47,30 @@ erDiagram
 
   DateTime dueDate "nullable"
 }
+"TaskAction" {
+  String id PK
+  String taskId FK
+  String actorId FK
+  ActionType actionType
+  String message "nullable"
+  String passedToId FK "nullable"
+  DateTime createdAt
+}
 "ChatThread" {
   String id PK
   String title
   ThreadStatus status
   Priority priority
+  String teamId FK "nullable"
   DateTime createdAt
   DateTime updatedAt
 }
 "Message" {
   String id PK
   String text
+  Priority priority
   String senderId FK
-  String threadId FK "nullable"
-  String taskId FK "nullable"
+  String chatThreadId FK
   DateTime createdAt
 }
 "Membership" {
@@ -88,18 +97,16 @@ erDiagram
   String A FK
   String B FK
 }
-"_MessageToTask" {
-  String A FK
-  String B FK
-}
 "Task" }o--|| "User" : author
 "Task" }o--o| "User" : assignee
-"Task" }o--o| "Task" : parentTask
-"Task" }o--o| "Message" : sourceMessage
+"Task" }o--o| "ChatThread" : chatThread
 "Task" }o--o| "Team" : team
+"TaskAction" }o--|| "Task" : task
+"TaskAction" }o--|| "User" : actor
+"TaskAction" }o--o| "User" : passedTo
+"ChatThread" }o--o| "Team" : team
 "Message" }o--|| "User" : sender
-"Message" }o--o| "ChatThread" : thread
-"Message" }o--o| "Task" : task
+"Message" }o--|| "ChatThread" : chatThread
 "Membership" }o--|| "User" : user
 "Membership" }o--|| "Team" : team
 "Membership" }o--o| "User" : inviter
@@ -107,8 +114,6 @@ erDiagram
 "_TaskToUser" }o--|| "User" : User
 "_ChatThreadToUser" }o--|| "ChatThread" : ChatThread
 "_ChatThreadToUser" }o--|| "User" : User
-"_MessageToTask" }o--|| "Message" : Message
-"_MessageToTask" }o--|| "Task" : Task
 ```
 
 ### `User`
@@ -142,19 +147,31 @@ Properties as follows:
 - `id`:
 - `title`:
 - `description`:
+- `type`:
 - `difficulty`:
 - `duration`:
 - `priority`:
 - `progress`:
 - `authorId`:
 - `assigneeId`:
-- `parentTaskId`:
-- `sourceMessageId`:
+- `chatThreadId`:
 - `teamId`:
 - `createdAt`:
 - `updatedAt`:
 - `achievedAt`:
 - `dueDate`:
+
+### `TaskAction`
+
+Properties as follows:
+
+- `id`:
+- `taskId`:
+- `actorId`:
+- `actionType`:
+- `message`:
+- `passedToId`:
+- `createdAt`:
 
 ### `ChatThread`
 
@@ -164,6 +181,7 @@ Properties as follows:
 - `title`:
 - `status`:
 - `priority`:
+- `teamId`:
 - `createdAt`:
 - `updatedAt`:
 
@@ -173,9 +191,9 @@ Properties as follows:
 
 - `id`:
 - `text`:
+- `priority`:
 - `senderId`:
-- `threadId`:
-- `taskId`:
+- `chatThreadId`:
 - `createdAt`:
 
 ### `Membership`
@@ -209,15 +227,6 @@ Properties as follows:
 ### `_ChatThreadToUser`
 
 Pair relationship table between [ChatThread](#ChatThread) and [User](#User)
-
-Properties as follows:
-
-- `A`:
-- `B`:
-
-### `_MessageToTask`
-
-Pair relationship table between [Message](#Message) and [Task](#Task)
 
 Properties as follows:
 

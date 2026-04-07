@@ -2,20 +2,35 @@ import { Injectable } from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
 import { Prisma, Task } from "@prisma/client";
 
-const taskWithMessagesInclude = {
-	sourceMessage: {
+const taskWithThreadDetailInclude = {
+	author: true,
+	assignee: true,
+	actions: {
+		orderBy: { createdAt: 'asc' as const },
+		include: { actor: true, passedTo: true },
+	},
+	chatThread: {
 		include: {
-			thread: {
+			messages: {
+				orderBy: { createdAt: 'asc' as const },
+				include: { sender: true },
+			},
+			tasks: {
 				include: {
-				messages: true,
+					author: true,
+					assignee: true,
+					actions: {
+						orderBy: { createdAt: 'asc' as const },
+						include: { actor: true, passedTo: true },
+					},
 				},
 			},
 		},
 	},
 } satisfies Prisma.TaskInclude;
 
-type TaskWithThreadMessages = Prisma.TaskGetPayload<{
-	include: typeof taskWithMessagesInclude;
+export type TaskWithThreadDetails = Prisma.TaskGetPayload<{
+	include: typeof taskWithThreadDetailInclude;
 }>;
 
 @Injectable()
@@ -35,17 +50,29 @@ export class TasksRepository {
 		});
 	}
 
-	async	findById(id: string): Promise<TaskWithThreadMessages | null> {
+	async	findById(id: string): Promise<TaskWithThreadDetails | null> {
 		return this.prisma.task.findUnique({
 			where: { id: id },
 			include: {
-				sourceMessage: {
+				author: true,
+				assignee: true,
+				actions: {
+					orderBy: { createdAt: 'asc' },
+					include: { actor: true, passedTo: true },
+				},
+				chatThread: {
 					include: {
-						thread: {
+						messages: {
+							orderBy: { createdAt: 'asc' },
+							include: { sender: true },
+						},
+						tasks: {
 							include: {
-								messages: {
+								author: true,
+								assignee: true,
+								actions: {
 									orderBy: { createdAt: 'asc' },
-									include: { sender: true },
+									include: { actor: true, passedTo: true },
 								}
 							}
 						}
@@ -81,7 +108,7 @@ export class TasksRepository {
 				data: data,
 			});
 		} catch(error) {
-			if (error.code === 'P2025') {
+			if (error instanceof Prisma.PrismaClientKnownRequestError) {
 				throw new Error('RecordNotFound');
 			}
 			throw error;

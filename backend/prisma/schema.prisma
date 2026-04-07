@@ -18,6 +18,10 @@ datasource db {
   provider  = "postgresql"
 }
 
+// ==========================================
+// Enums
+// ==========================================
+
 enum Difficulty {
   TRIVIAL
   SIMPLE
@@ -61,6 +65,23 @@ enum MembershipStatus {
   DECLINED
 }
 
+enum TaskType {
+  DEFAULT
+  REPLY
+}
+
+enum ActionType {
+  CREATED
+  PROGRESSED
+  PASSED
+  COMPLETED
+  CANCELED
+}
+
+// ==========================================
+// Models
+// ==========================================
+
 model User {
   id    String  @id @default(uuid())
   name  String
@@ -81,8 +102,10 @@ model User {
   invitedMember Membership[]  @relation("InviterMemberships")
 
   chatThreads ChatThread[]  @relation("ThreadMembers")
-
   messages  Message[]
+
+  actionPerformed TaskAction[]  @relation("ActionActor")
+  actionReceived  TaskAction[]  @relation("ActionPassedTo")
 
   createdAt     DateTime  @default(now())
   lastActiveAt  DateTime  @default(now())
@@ -97,15 +120,17 @@ model Team {
   level Int @default(0)
   exp   Int @default(0)
 
-  tasks Task[]
-
-  members Membership[]
+  tasks       Task[]
+  members     Membership[]
+  chatThreads ChatThread[]
 }
 
 model Task {
   id          String    @id @default(uuid())
   title       String
   description String?
+
+  type        TaskType  @default(DEFAULT)
 
   difficulty  Difficulty  @default(SIMPLE)
   duration    Duration    @default(STANDARD)
@@ -121,22 +146,37 @@ model Task {
 
   contributors User[]   @relation("TaskContributors")
 
-  parentTaskId  String?
-  parentTask    Task?   @relation("SubTasks", fields: [parentTaskId], references: [id])
-  subTasks      Task[]  @relation("SubTasks")
-
-  messages Message[] @relation("TaskMessages")
-
-  sourceMessageId String?
-  sourceMessage   Message? @relation("TaskFromMessage", fields: [sourceMessageId], references: [id])
+  chatThreadId  String?
+  chatThread    ChatThread? @relation(fields: [chatThreadId], references: [id])
 
   teamId      String?
   team        Team?     @relation(fields: [teamId], references: [id])
+
+  actions  TaskAction[]
 
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   achievedAt  DateTime?
   dueDate     DateTime?
+}
+
+model TaskAction {
+  id  String  @id @default(uuid())
+
+  taskId  String
+  task    Task    @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  actorId String
+  actor   User    @relation("ActionActor", fields: [actorId], references: [id])
+
+  actionType  ActionType
+
+  message  String?
+
+  passedToId  String?
+  passedTo    User?   @relation("ActionPassedTo", fields: [passedToId], references: [id])
+
+  createdAt DateTime  @default(now())
 }
 
 model ChatThread {
@@ -148,6 +188,11 @@ model ChatThread {
   members   User[]  @relation("ThreadMembers")
   messages  Message[]
 
+  teamId    String?
+  team      Team?   @relation(fields: [teamId], references: [id])
+
+  tasks     Task[]
+
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 }
@@ -156,16 +201,13 @@ model Message {
   id    String  @id @default(uuid())
   text  String
 
+  priority  Priority    @default(NORMAL)
+
   senderId  String
   sender    User  @relation(fields: [senderId], references: [id])
 
-  threadId  String?
-  thread    ChatThread? @relation(fields: [threadId], references: [id], onDelete: Cascade)
-
-  taskId  String?
-  task    Task? @relation("TaskMessages", fields: [taskId], references: [id], onDelete: Cascade)
-
-  derivedTasks  Task[]  @relation("TaskFromMessage")
+  chatThreadId  String
+  chatThread    ChatThread  @relation(fields: [chatThreadId], references: [id], onDelete: Cascade)
 
   createdAt DateTime  @default(now())
 }

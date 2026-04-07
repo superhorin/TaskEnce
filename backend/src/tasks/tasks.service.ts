@@ -22,13 +22,7 @@ export class TasksService {
 			throw new Error("Task not found");
 		}
 
-		const threadMessages = task.sourceMessage?.thread?.messages || [];
-
-		return {
-			...task,
-			relatedThreadMessages: threadMessages,
-			sourceMessage: undefined,
-		};
+		return task;
 	}
 
 	async createTask(dto: CreateTaskDto, user: User) {
