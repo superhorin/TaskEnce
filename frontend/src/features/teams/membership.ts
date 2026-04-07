@@ -4,13 +4,13 @@ import type { Team } from "./team";
 export type TeamRole = 'OWNER' | 'ADMIN' | 'MEMBER' | 'GUEST';
 export type MembershipStatus = 'INVITED' | 'ACTIVE' | 'BLOCKED' | 'DECLINED';
 
-export interface Member {
+export interface Membership {
 	id:			string;
 	role:		TeamRole;
 	status:		MembershipStatus;
 
-	nickname:	string;
-	position:	string;
+	nickname?:	string;
+	position?:	string;
 	inMuted:	boolean;
 
 	teamExp:	number;
@@ -18,6 +18,8 @@ export interface Member {
 
 	user:		User;
 	team:		Team;
+
+	inviter:	User;
 
 	createdAt:	string;
 	joinedAt:	string;

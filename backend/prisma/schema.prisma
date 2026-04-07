@@ -98,8 +98,8 @@ model User {
   assignedTasks     Task[]  @relation("TaskAssignee")
   contributedTasks  Task[]  @relation("TaskContributors")
 
-  memberships   Membership[]  @relation("UserMemberships")
-  invitedMember Membership[]  @relation("InviterMemberships")
+  memberships     Membership[]  @relation("UserMemberships")
+  invitedMembers  Membership[]  @relation("InviterMemberships")
 
   chatThreads ChatThread[]  @relation("ThreadMembers")
   messages  Message[]

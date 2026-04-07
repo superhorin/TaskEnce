@@ -1,6 +1,6 @@
 import type { User } from "../users/user";
 import type { Team } from "../teams/team";
-import type { Message } from "../messages/message";
+import type { ChatThread } from "../chatThread/chatThread";
 
 export type Difficulty = 'TRIVIAL' | 'SIMPLE' | 'CHALLENGING' | 'HARD' | 'EPIC';
 export type Duration = 'BURST' | 'QUICK' | 'STANDARD' | 'LONG' | 'MARATHON';
@@ -21,12 +21,7 @@ export interface Task {
 	assignee?:		User[];
 	contributors?:	User[];
 
-	parentTask?:	Task[]
-	subTasks?:		Task[]
-
-	messages?:		Message[]
-
-	sourceMessage?:	Message
+	chatThread?:	ChatThread;
 
 	teams?:	Team[];
 
@@ -34,6 +29,4 @@ export interface Task {
 	updatedAt:    	string;
 	achievedAt?: 	string;
 	dueDate?:		string;
-
-	relatedThreadMessages?:	Message[]
 }

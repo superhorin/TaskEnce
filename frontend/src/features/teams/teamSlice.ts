@@ -1,9 +1,9 @@
 import { __DO_NOT_USE__ActionTypes, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import type { Member } from "./member";
+import type { Membership } from "./membership";
 import api from "@/lib/api";
 
 interface TeamState {
-	members:	Member[];
+	members:	Membership[];
 	loading:	boolean;
 }
 

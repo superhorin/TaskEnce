@@ -17,7 +17,7 @@ export const TaskDetailPage = () => {
 
 	useEffect(() => {
 		if (id) {
-			const needsFetch = !task || task.relatedThreadMessages === undefined;
+			const needsFetch = !task || task.chatThread === undefined;
 			console.log("needsFetch!!!!" + needsFetch);
 			if (needsFetch) {
 				dispatch(fetchTaskById(id));
@@ -63,7 +63,7 @@ export const TaskDetailPage = () => {
 			<div className="mt-12 p-6 bg-blue-50 border border-blue-100 rounded-lg">
 				<h3 className="text-lg font-bold text-blue-900 mb-2">Action Logs</h3>
 				<ul>
-					{task.relatedThreadMessages?.map((message) => (
+					{task.chatTread?.messages?.map((message) => (
 						<li key={message.id} className="bg-white rounded-xl mb-3">
 							<p className="text-blue-700 text-xs">{message.sender.name}</p>
 							<p className="text-blue-700 text-sm">{message.text}</p>

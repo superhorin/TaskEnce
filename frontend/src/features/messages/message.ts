@@ -1,16 +1,15 @@
-import type { ChatThread } from "../chat/chat"
-import type { Task } from "../tasks/task"
+import type { ChatThread } from "../chatThread/chatThread"
+import type { Priority } from "../tasks/task"
 import type { User } from "../users/user"
 
 export interface Message {
-	id:		string
-	text:	string
+	id:		string;
+	text:	string;
 
-	sender:		User
-	thread?:	ChatThread
-	task?:		Task
+	priotiry:	Priority;
 
-	derivedTasks?:	Task[]
+	sender:			User;
+	cahtThread?:	ChatThread;
 
-	createdAt:		string
+	createdAt:		string;
 }
