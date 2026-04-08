@@ -6,10 +6,11 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { JwtStrategy } from './jwt.strategy';
 import { AuthRepository } from './auth.repository';
+import { RedisModule } from 'src/redis/redis.module';
 
 @Module({
   imports: [
-    PrismaModule,
+    PrismaModule, RedisModule,
     JwtModule.registerAsync({
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => ({

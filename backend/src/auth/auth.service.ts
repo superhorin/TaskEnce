@@ -4,6 +4,8 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { LoginDto } from './dto/login.dto';
 import { AuthRepository } from './auth.repository';
+import { RedisService } from 'src/redis/redis.service';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class AuthService {
@@ -11,6 +13,7 @@ export class AuthService {
 	constructor(
 		private readonly jwtService: JwtService,
 		private readonly authRepository: AuthRepository,
+		private readonly redisService: RedisService,
 	) {}
 
 	async register(dto: RegisterDto) {
@@ -30,11 +33,17 @@ export class AuthService {
 
 		const newUser = await this.authRepository.create(userData);
 
-		const { password, ...userWithoutPassword } = newUser;
 		const payload = { sub: newUser.id, email: newUser.email };
+
+		const accessToken = this.jwtService.sign(payload);
+
+		const sessionId = uuidv4();
+
+		await this.redisService.set(`session:${sessionId}`, newUser.id, 'EX', 86400);
+
 		return {
-			user: userWithoutPassword,
-			accessToken: this.jwtService.sign(payload),
+			accessToken,
+			sessionId,
 		};
 	}
 
@@ -51,13 +60,17 @@ export class AuthService {
 			throw new UnauthorizedException('mail address or password is wrong.');
 		}
 
+		const sessionId = uuidv4();
+
+		await this.redisService.set(`session:${sessionId}`, user.id, 'EX', 86400);
+
 		const payload = { sub: user.id, email: user.email };
 
-		const { password, ...userWithoutPassword } = user;
+		const accessToken = this.jwtService.sign(payload);
 
 		return {
-			user: userWithoutPassword,
-			accessToken: this.jwtService.sign(payload),
-		}
+			accessToken,
+			sessionId,
+		};
 	}
 }
