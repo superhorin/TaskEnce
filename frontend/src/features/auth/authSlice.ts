@@ -1,11 +1,12 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import type { AuthState } from "./auth";
 import api from '@/lib/api';
+import { AirVent } from "lucide-react";
 
 const	initialState: AuthState = {
 	user:		null,
 	token:		localStorage.getItem("token") || null,
-	loading:	false,
+	loading:	true,
 	error:		null,
 }
 
@@ -70,6 +71,7 @@ export const authSlice = createSlice({
 			.addCase(loginUser.fulfilled, (state, action) => {
 				state.loading = false;
 				state.token = action.payload.accessToken;
+				state.user = action.payload.user;
 			})
 			.addCase(loginUser.rejected, (state, action) => {
 				state.loading = false;
@@ -81,8 +83,8 @@ export const authSlice = createSlice({
 			})
 			.addCase(registerUser.fulfilled, (state, action) => {
 				state.loading = false;
-				state.user = action.payload.user;
 				state.token = action.payload.accessToken;
+				state.user = action.payload.user;
 			})
 			.addCase(registerUser.rejected, (state, action) => {
 				state.loading = false;

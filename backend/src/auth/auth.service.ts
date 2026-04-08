@@ -44,6 +44,7 @@ export class AuthService {
 		return {
 			accessToken,
 			sessionId,
+			newUser,
 		};
 	}
 
@@ -71,6 +72,7 @@ export class AuthService {
 		return {
 			accessToken,
 			sessionId,
+			user,
 		};
 	}
 }

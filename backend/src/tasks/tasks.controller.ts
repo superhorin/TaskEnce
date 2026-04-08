@@ -2,11 +2,11 @@ import { Controller, Get, Post, Body, Patch, Param, UseGuards } from '@nestjs/co
 import { TasksService } from './tasks.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-tasks.dto';
-import { AuthGuard } from '@nestjs/passport';
+import { HybridAuthGuard } from 'src/auth/hybrid-auth.guard';
 import { GetUser } from 'src/auth/get-user.decorator';
 import type { User } from '@prisma/client';
 
-@UseGuards(AuthGuard('jwt'))
+@UseGuards(HybridAuthGuard)
 @Controller('tasks')
 export class TasksController {
 	constructor(private readonly taskService: TasksService) {}

@@ -1,11 +1,11 @@
 import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
+import { HybridAuthGuard } from 'src/auth/hybrid-auth.guard';
 import { TeamService } from './team.service';
 import { GetUser } from 'src/auth/get-user.decorator';
 import type { User } from '@prisma/client';
 import { CreateTeamDto, InviteUserDto } from './dto/create-team.dto';
 
-@UseGuards(AuthGuard('jwt'))
+@UseGuards(HybridAuthGuard)
 @Controller('team')
 export class TeamController {
 	constructor(private readonly teamService: TeamService) {}

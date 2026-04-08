@@ -7,6 +7,7 @@ import { ConfigService } from '@nestjs/config';
 import { JwtStrategy } from './jwt.strategy';
 import { AuthRepository } from './auth.repository';
 import { RedisModule } from 'src/redis/redis.module';
+import { HybridAuthGuard } from './hybrid-auth.guard';
 
 @Module({
   imports: [
@@ -23,7 +24,9 @@ import { RedisModule } from 'src/redis/redis.module';
     AuthService,
     JwtStrategy,
     AuthRepository,
+    HybridAuthGuard,
   ],
   controllers: [AuthController],
+  exports: [JwtModule, AuthRepository, RedisModule, HybridAuthGuard],
 })
 export class AuthModule {}

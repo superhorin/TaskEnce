@@ -5,7 +5,7 @@ import { LoginPage } from '@/pages/LoginPage';
 import { MainLayout } from '@/layouts/MainLayout';
 import { PublicRoute } from '@/features/auth/PublicRoute';
 import { RegisterPage } from '@/pages/RegisterPage';
-import { useAppDispatch, useAppSelector } from './hooks';
+import { useAppDispatch } from './hooks';
 import { useEffect } from 'react';
 import { fetchCurrentUser } from '@/features/auth/authSlice';
 import { TaskDetailPage } from '@/pages/TaskDetailPage';
@@ -13,13 +13,10 @@ import { TeamPage } from '@/pages/TeamPage';
 
 function App() {
   const dispatch = useAppDispatch();
-  const token = useAppSelector(state => state.auth.token);
 
-  useEffect(() => {
-    if (token) {
+    useEffect(() => {
       dispatch(fetchCurrentUser());
-    }
-  }, [dispatch, token]);
+  }, [dispatch]);
 
   return (
     <BrowserRouter>
