@@ -41,8 +41,22 @@ cp .env.local .env
 .envに任意の変数を入力
 ```
 docker-compose up -d
-npm run dev #初回起動
+npm run dev #初回起動（db:sync && start:dev）
 npm run start:dev #２回目以降
+```
+
+### 🗄 データベースマイグレーションのルール
+- 本プロジェクトでは Prisma を使用しています。テーブルスキーマに変更を加える際は、以下の手順を厳守してください。
+
+#### スキーマファイルを編集します
+- prisma/schema.prisma
+
+#### マイグレーションファイル生成
+- 以下を実行しマイグレーションファイルを生成します。
+  - DBへの反映と prisma/migrations フォルダ内へのSQLファイル生成が行われます。
+- 生成されたマイグレーションファイルを Git にコミットする。
+```
+npm run db:sync
 ```
 
 ### フロントエンドの起動
