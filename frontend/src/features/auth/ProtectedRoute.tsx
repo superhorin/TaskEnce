@@ -12,7 +12,5 @@ export const ProtectedRoute = () => {
 		return <Navigate to="/login" replace />
 	}
 
-	console.log("111111111111");
-
 	return <Outlet />;
 }

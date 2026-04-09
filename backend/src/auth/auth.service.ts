@@ -33,19 +33,9 @@ export class AuthService {
 
 		const newUser = await this.authRepository.create(userData);
 
-		const payload = { sub: newUser.id, email: newUser.email };
+		const { password, ...userWithoutPassword } = newUser;
 
-		const accessToken = this.jwtService.sign(payload);
-
-		const sessionId = uuidv4();
-
-		await this.redisService.set(`session:${sessionId}`, newUser.id, 'EX', 86400);
-
-		return {
-			accessToken,
-			sessionId,
-			newUser,
-		};
+		return userWithoutPassword;
 	}
 
 	async login(dto: LoginDto) {
@@ -61,18 +51,22 @@ export class AuthService {
 			throw new UnauthorizedException('mail address or password is wrong.');
 		}
 
+		const { password, ...userWithoutPassword } = user;
+
+		return userWithoutPassword;
+	}
+
+	async createSession(userId: string) {
 		const sessionId = uuidv4();
 
-		await this.redisService.set(`session:${sessionId}`, user.id, 'EX', 86400);
+		await this.redisService.set(`session:${sessionId}`, userId, 'EX', 86400);
 
-		const payload = { sub: user.id, email: user.email };
+		return sessionId;
+	}
 
-		const accessToken = this.jwtService.sign(payload);
+	async createToken(userId: string, userEmail: string) {
+		const payload = { sub: userId, email: userEmail };
 
-		return {
-			accessToken,
-			sessionId,
-			user,
-		};
+		return this.jwtService.sign(payload);
 	}
 }

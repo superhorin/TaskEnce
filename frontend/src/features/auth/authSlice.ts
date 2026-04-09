@@ -1,11 +1,9 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import type { AuthState } from "./auth";
 import api from '@/lib/api';
-import { AirVent } from "lucide-react";
 
 const	initialState: AuthState = {
 	user:		null,
-	token:		localStorage.getItem("token") || null,
 	loading:	true,
 	error:		null,
 }
@@ -15,8 +13,6 @@ export const loginUser = createAsyncThunk(
 	async (credentials: { email: string; password: string }, {rejectWithValue}) => {
 		try {
 			const res = await api.post('/auth/login', credentials);
-
-			localStorage.setItem('token', res.data.accessToken);
 
 			return res.data;
 		} catch (error: any) {
@@ -30,8 +26,6 @@ export const registerUser = createAsyncThunk(
 	async(credentials: {email: string, password: string, name: string}, { rejectWithValue }) => {
 		try {
 			const res = await api.post('/auth/register', credentials);
-
-			localStorage.setItem('token', res.data.accessToken);
 
 			return res.data;
 		} catch (error: any) {
@@ -58,8 +52,6 @@ export const authSlice = createSlice({
 	reducers: {
 		logout: (state) => {
 			state.user = null;
-			state.token = null;
-			localStorage.removeItem('token');
 		},
 	},
 	extraReducers: (builder) => {
@@ -70,7 +62,6 @@ export const authSlice = createSlice({
 			})
 			.addCase(loginUser.fulfilled, (state, action) => {
 				state.loading = false;
-				state.token = action.payload.accessToken;
 				state.user = action.payload.user;
 			})
 			.addCase(loginUser.rejected, (state, action) => {
@@ -83,7 +74,6 @@ export const authSlice = createSlice({
 			})
 			.addCase(registerUser.fulfilled, (state, action) => {
 				state.loading = false;
-				state.token = action.payload.accessToken;
 				state.user = action.payload.user;
 			})
 			.addCase(registerUser.rejected, (state, action) => {
@@ -101,8 +91,6 @@ export const authSlice = createSlice({
 			.addCase(fetchCurrentUser.rejected, (state) => {
 				state.loading = false;
 				state.user = null;
-				state.token = null;
-				localStorage.removeItem('token');
 			});
 	},
 });

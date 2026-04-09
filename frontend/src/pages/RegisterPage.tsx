@@ -7,7 +7,7 @@ export const RegisterPage = () => {
 
 	const navigate = useNavigate();
 
-	const isLoggedIn = useAppSelector(state => !!state.auth.token);
+	const isLoggedIn = useAppSelector(state => !!state.auth.user);
 
 	return (
 		<div>

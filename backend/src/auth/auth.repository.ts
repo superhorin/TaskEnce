@@ -21,7 +21,6 @@ export class AuthRepository {
 	async	create(data: any): Promise<User> {
 		return this.prisma.user.create({
 			data: data,
-			
 		})
 	}
 }

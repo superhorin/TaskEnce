@@ -1,8 +1,11 @@
 import axios from 'axios';
-import { API_URL } from '@/config/env';
+
+const hostname = window.location.hostname;
+
+const API_URL = import.meta.env.VITE_API_URL || `http://${hostname}:3003`;
 
 const api = axios.create({
-	baseURL: API_URL,
+	baseURL: `${API_URL}/web-api`,
 	withCredentials: true,
 	headers: {
 		'Content-Type' : 'application/json',
@@ -10,14 +13,8 @@ const api = axios.create({
 });
 
 api.interceptors.request.use(
-	(config) => {
-		const token = localStorage.getItem('token');
-
-		if (token) {
-			config.headers.Authorization = `Bearer ${token}`;
-		}
-
-		return config;
+	(response) => {
+		return response;
 	},
 	(error) => {
 		return Promise.reject(error);

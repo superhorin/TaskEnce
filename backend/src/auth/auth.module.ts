@@ -1,13 +1,14 @@
 import { Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { AuthController } from './auth.controller';
 import { PrismaModule } from 'src/prisma/prisma.module';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { JwtStrategy } from './jwt.strategy';
 import { AuthRepository } from './auth.repository';
 import { RedisModule } from 'src/redis/redis.module';
-import { HybridAuthGuard } from './hybrid-auth.guard';
+import { WebAuthController, ApiAuthController } from './auth.controller';
+import { CookieAuthGuard } from './cookie-auth.guard';
+import { TokenAuthGuard } from './token-auth.guard';
 
 @Module({
   imports: [
@@ -24,9 +25,10 @@ import { HybridAuthGuard } from './hybrid-auth.guard';
     AuthService,
     JwtStrategy,
     AuthRepository,
-    HybridAuthGuard,
+    CookieAuthGuard,
+    TokenAuthGuard,
   ],
-  controllers: [AuthController],
-  exports: [JwtModule, AuthRepository, RedisModule, HybridAuthGuard],
+  controllers: [WebAuthController, ApiAuthController],
+  exports: [JwtModule, AuthRepository, RedisModule, CookieAuthGuard, TokenAuthGuard],
 })
 export class AuthModule {}

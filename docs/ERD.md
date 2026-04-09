@@ -44,7 +44,6 @@ erDiagram
   DateTime createdAt
   DateTime updatedAt
   DateTime achievedAt "nullable"
-
   DateTime dueDate "nullable"
 }
 "TaskAction" {
