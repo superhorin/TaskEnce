@@ -6,6 +6,7 @@ import { LoginDto } from './dto/login.dto';
 import { AuthRepository } from './auth.repository';
 import { RedisService } from 'src/redis/redis.service';
 import { v4 as uuidv4 } from 'uuid';
+import { session } from 'passport';
 
 @Injectable()
 export class AuthService {
@@ -68,5 +69,9 @@ export class AuthService {
 		const payload = { sub: userId, email: userEmail };
 
 		return this.jwtService.sign(payload);
+	}
+
+	async deleteSession(sessionId: string) {
+		await this.redisService.del(`session:${sessionId}`);
 	}
 }

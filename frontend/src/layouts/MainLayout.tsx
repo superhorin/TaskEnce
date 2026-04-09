@@ -1,6 +1,6 @@
 import { useAppDispatch, useAppSelector } from "@/app/hooks"
 import { Button } from "@/components/ui/button";
-import { logout } from "@/features/auth/authSlice";
+import { logoutUser } from "@/features/auth/authSlice";
 import { Outlet, useNavigate } from "react-router-dom";
 
 export const MainLayout = ()=> {
@@ -10,7 +10,7 @@ export const MainLayout = ()=> {
 	const user = useAppSelector(state => state.auth.user);
 
 	const handleLogout = () => {
-		dispatch(logout());
+		dispatch(logoutUser());
 		navigate("/login");
 	};
 

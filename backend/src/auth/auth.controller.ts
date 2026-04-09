@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
@@ -7,6 +7,7 @@ import type { User } from '@prisma/client';
 import type { Response } from 'express';
 import { CookieAuthGuard } from './cookie-auth.guard';
 import { TokenAuthGuard } from './token-auth.guard';
+import type { Request } from "express";
 
 @Controller('web-api/auth')
 export class WebAuthController {
@@ -42,6 +43,23 @@ export class WebAuthController {
 	}
 
 	@UseGuards(CookieAuthGuard)
+	@Post('logout')
+	async logout(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
+		const sessionId = req.cookies?.['session_id'];
+		if (sessionId) {
+			await this.authService.deleteSession(sessionId);
+		}
+
+		res.clearCookie('session_id', {
+			httpOnly: true,
+			secure: process.env.NODE_ENV === 'production',
+			sameSite: 'lax',
+		});
+
+		return { message: 'logout!' };
+	}
+
+	@UseGuards(CookieAuthGuard)
 	@Get('me')
 	getProfile(@GetUser() user: User) {
 		return user;
@@ -68,6 +86,13 @@ export class ApiAuthController {
 		const accessToken = await this.authService.createToken(user.id, user.email);
 
 		return { accessToken, user };
+	}
+
+	@UseGuards(TokenAuthGuard)
+	@Post('logout')
+	@HttpCode(HttpStatus.OK)
+	async logout() {
+		return { message: 'logout!' };
 	}
 
 	@UseGuards(TokenAuthGuard)
