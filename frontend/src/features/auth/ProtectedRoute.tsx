@@ -2,9 +2,9 @@ import { useAppSelector } from "@/app/hooks"
 import { Navigate, Outlet } from "react-router-dom"
 
 export const ProtectedRoute = () => {
-	const { user, loading } = useAppSelector(state => state.auth); 
+	const { user, isCheckingAuth } = useAppSelector(state => state.auth); 
 
-	if (loading) {
+	if (isCheckingAuth) {
 		return <div>Loading...</div>;
 	}
 

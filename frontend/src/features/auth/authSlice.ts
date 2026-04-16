@@ -3,9 +3,10 @@ import type { AuthState } from "./auth";
 import api from '@/lib/api';
 
 const	initialState: AuthState = {
-	user:		null,
-	loading:	true,
-	error:		null,
+	user:			null,
+	isCheckingAuth:	true,
+	loading:		false,
+	error:			null,
 }
 
 export const loginUser = createAsyncThunk(
@@ -62,7 +63,9 @@ export const authSlice = createSlice({
 	name: 'auth',
 	initialState,
 	reducers: {
-
+		clearAuthError: (state) => {
+			state.error = null;
+		},
 	},
 	extraReducers: (builder) => {
 		builder
@@ -91,17 +94,15 @@ export const authSlice = createSlice({
 				state.error = action.payload as string;
 			})
 			.addCase(fetchCurrentUser.pending, (state) => {
-				state.loading = true;
-				state.error = null;
+				state.isCheckingAuth = true;
 			})
 			.addCase(fetchCurrentUser.fulfilled, (state, action) => {
-				state.loading = false;
+				state.isCheckingAuth = false;
 				state.user = action.payload;
 			})
-			.addCase(fetchCurrentUser.rejected, (state, action) => {
-				state.loading = false;
+			.addCase(fetchCurrentUser.rejected, (state) => {
+				state.isCheckingAuth = false;
 				state.user = null;
-				state.error = action.payload as string;
 			})
 			.addCase(logoutUser.pending, (state) => {
 				state.loading = true;
@@ -119,3 +120,4 @@ export const authSlice = createSlice({
 });
 
 export default authSlice.reducer;
+export const { clearAuthError } = authSlice.actions;

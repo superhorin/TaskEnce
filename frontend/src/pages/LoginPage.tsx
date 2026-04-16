@@ -3,8 +3,7 @@ import { LoginForm } from "@/features/auth/components/LoginForm";
 import { useNavigate } from "react-router-dom";
 
 export const LoginPage = () => {
-
-	const navigate = useNavigate()
+	const navigate = useNavigate();
 
 	return (
 		<div>

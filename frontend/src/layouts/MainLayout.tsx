@@ -9,8 +9,8 @@ export const MainLayout = ()=> {
 
 	const user = useAppSelector(state => state.auth.user);
 
-	const handleLogout = () => {
-		dispatch(logoutUser());
+	const handleLogout = async () => {
+		await dispatch(logoutUser());
 		navigate("/login");
 	};
 

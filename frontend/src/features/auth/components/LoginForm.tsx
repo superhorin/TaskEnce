@@ -1,7 +1,7 @@
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { Button } from "@/components/ui/button";
-import React, { useState } from "react";
-import { loginUser } from "../authSlice";
+import React, { useEffect, useState } from "react";
+import { clearAuthError, loginUser } from "../authSlice";
 import { useNavigate } from "react-router-dom";
 
 export const LoginForm = () => {
@@ -11,6 +11,10 @@ export const LoginForm = () => {
 
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
+
+	useEffect(() => {
+		dispatch(clearAuthError());
+	}, [dispatch]);
 
 	const handleSubmit = async(e: React.SubmitEvent) => {
 		e.preventDefault();

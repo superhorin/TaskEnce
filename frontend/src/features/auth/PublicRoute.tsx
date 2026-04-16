@@ -2,9 +2,9 @@ import { Navigate, Outlet } from "react-router-dom";
 import { useAppSelector } from "@/app/hooks";
 
 export const PublicRoute = () => {
-	const { user, loading } = useAppSelector(state => state.auth); 
+	const { user, isCheckingAuth } = useAppSelector(state => state.auth); 
 
-	if (loading) {
+	if (isCheckingAuth) {
 		return <div>Loading...</div>;
 	}
 
