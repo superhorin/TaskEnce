@@ -29,6 +29,6 @@ import { TokenAuthGuard } from './token-auth.guard';
     TokenAuthGuard,
   ],
   controllers: [WebAuthController, ApiAuthController],
-  exports: [JwtModule, AuthRepository, RedisModule, CookieAuthGuard, TokenAuthGuard],
+  exports: [JwtModule, AuthRepository, RedisModule, CookieAuthGuard, TokenAuthGuard, AuthService],
 })
 export class AuthModule {}

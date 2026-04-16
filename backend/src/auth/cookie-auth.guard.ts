@@ -2,12 +2,14 @@ import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from
 import { RedisService } from "src/redis/redis.service";
 import { AuthRepository } from "./auth.repository";
 import { Request } from "express";
+import { AuthService } from "./auth.service";
 
 @Injectable()
 export class CookieAuthGuard implements CanActivate {
 	constructor(
 		private readonly redisService: RedisService,
 		private readonly authRepository: AuthRepository,
+		private readonly authService: AuthService,
 	) {}
 
 	async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -22,6 +24,8 @@ export class CookieAuthGuard implements CanActivate {
 		if (!userId) {
 			throw new UnauthorizedException('no session with this user id.');
 		}
+
+		await this.authService.refreshSession(sessionId);
 
 		const user = await this.authRepository.find(userId);
 		if (!user) {
