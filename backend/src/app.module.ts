@@ -8,15 +8,15 @@ import { AuthModule } from './auth/auth.module';
 import { TeamModule } from './team/team.module';
 import { RedisService } from './redis/redis.service';
 import { RedisModule } from './redis/redis.module';
+import { ThreadModule } from './thread/thread.module';
 
 @Module({
   imports: [
-    PrismaModule, TasksModule, AuthModule, TeamModule, RedisModule,
+    PrismaModule, TasksModule, AuthModule, TeamModule, ThreadModule, RedisModule,
     ConfigModule.forRoot({
       isGlobal: true,
       expandVariables: true,
     }),
-    RedisModule,
   ],
   controllers: [AppController],
   providers: [AppService, RedisService],
