@@ -17,7 +17,6 @@ import { TokenAuthGuard } from './token-auth.guard';
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => ({
         secret: configService.getOrThrow<string>('JWT_SECRET'),
-        signOptions: { expiresIn: '1d' },
       }),
     }),
   ],

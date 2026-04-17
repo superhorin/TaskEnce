@@ -11,14 +11,16 @@ import { ConfigService } from '@nestjs/config';
 @Injectable()
 export class AuthService {
 	// private readonly logger = new Logger(AuthService.name);
-	private readonly ttl: number;
+	public readonly sessionTtl: number;
+	public readonly tokenTtl: number;
 	constructor(
 		private readonly jwtService: JwtService,
 		private readonly authRepository: AuthRepository,
 		private readonly redisService: RedisService,
 		private readonly configService: ConfigService,
 	) {
-		this.ttl = this.configService.get<number>('auth.sessionTtl', 7 * 24 * 60 * 60);
+		this.sessionTtl = this.configService.get<number>('auth.sessionTtl', 7 * 24 * 60 * 60);
+		this.tokenTtl = this.configService.get<number>('auth.tokenTtl', 30 * 24 * 60 * 60);
 	}
 
 	async register(dto: RegisterDto) {
@@ -64,22 +66,53 @@ export class AuthService {
 	async createSession(userId: string) {
 		const sessionId = uuidv4();
 
-		await this.redisService.set(`session:${sessionId}`, userId, 'EX', this.ttl);
+		await this.redisService.set(`session:${sessionId}`, userId, 'EX', this.sessionTtl);
 
 		return sessionId;
 	}
 
 	async refreshSession(sessionId: string) {
-		await this.redisService.expire(`session:${sessionId}`, this.ttl);
-	}
-
-	async createToken(userId: string, userEmail: string) {
-		const payload = { sub: userId, email: userEmail };
-
-		return this.jwtService.sign(payload);
+		await this.redisService.expire(`session:${sessionId}`, this.sessionTtl);
 	}
 
 	async deleteSession(sessionId: string) {
 		await this.redisService.del(`session:${sessionId}`);
+	}
+
+	async createTokens(userId: string, userEmail: string) {
+		const payload = { sub: userId, email: userEmail };
+
+		const accessToken = this.jwtService.sign(payload, { expiresIn: '15m', });
+		const refreshToken = this.jwtService.sign(payload, { expiresIn: '7d', });
+
+		await this.redisService.set(`refresh_token:${userId}`, refreshToken, 'EX', this.tokenTtl);
+
+		return { accessToken, refreshToken };
+	}
+
+	async deleteToken(userId: string) {
+		await this.redisService.del(`refresh_token:${userId}`);
+	}
+
+	async refreshTokens(incomingRefreshToken: string) {
+		try {
+			const payload = this.jwtService.verify(incomingRefreshToken);
+			const userId = payload.sub;
+
+			const storedToken = await this.redisService.get(`refresh_token:${userId}`);
+
+			if (!storedToken || storedToken !== incomingRefreshToken) {
+				throw new UnauthorizedException('invalid refresh token.');
+			}
+
+			const user = await this.authRepository.find(userId);
+			if (!user) {
+				throw new UnauthorizedException('user does not exit.');
+			}
+
+			return await this.createTokens(user.id, user.email);
+		} catch(e) {
+			throw new UnauthorizedException('Please login again.');
+		}
 	}
 }

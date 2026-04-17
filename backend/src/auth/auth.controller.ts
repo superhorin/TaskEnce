@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Post, Req, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Post, Req, Res, UnauthorizedException, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
@@ -18,7 +18,7 @@ export class WebAuthController {
 			httpOnly: true,
 			secure: process.env.NODE_ENV === 'production',
 			sameSite: 'lax',
-			maxAge: 86400 * 1000,
+			maxAge: this.authService.sessionTtl * 1000,
 		});
 	}
 
@@ -74,24 +74,25 @@ export class ApiAuthController {
 	async register(@Body() dto: RegisterDto) {
 		const user = await this.authService.register(dto);
 
-		const accessToken = await this.authService.createToken(user.id, user.email);
+		const {accessToken, refreshToken} = await this.authService.createTokens(user.id, user.email);
 
-		return { accessToken, user };
+		return { accessToken, refreshToken, user };
 	}
 
 	@Post('login')
 	async login(@Body() dto: LoginDto) {
 		const user = await this.authService.login(dto);
 
-		const accessToken = await this.authService.createToken(user.id, user.email);
+		const {accessToken, refreshToken} = await this.authService.createTokens(user.id, user.email);
 
-		return { accessToken, user };
+		return { accessToken, refreshToken, user };
 	}
 
 	@UseGuards(TokenAuthGuard)
 	@Post('logout')
 	@HttpCode(HttpStatus.OK)
-	async logout() {
+	async logout(@GetUser() user: User) {
+		await this.authService.deleteToken(user.id);
 		return { message: 'logout!' };
 	}
 
@@ -99,5 +100,13 @@ export class ApiAuthController {
 	@Get('me')
 	getProfile(@GetUser() user: User) {
 		return user;
+	}
+
+	@Post('refresh')
+	async refresh(@Body('refreshToken') refreshToken: string) {
+		if (!refreshToken) {
+			throw new UnauthorizedException('no refresh tokens.');
+		}
+		return this.authService.refreshTokens(refreshToken);
 	}
 }
