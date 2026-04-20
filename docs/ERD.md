@@ -25,12 +25,23 @@ erDiagram
   Priority priority
   Status status
   String authorId FK
+  String assigneeId FK "nullable"
+  String achieverId FK "nullable"
   String teamId FK "nullable"
   DateTime createdAt
   DateTime updatedAt
+  DateTime achievedAt "nullable"
+}
+"_TeamToUser" {
+  String A FK
+  String B FK
 }
 "Task" }o--|| "User" : author
+"Task" }o--o| "User" : assignee
+"Task" }o--o| "User" : achiever
 "Task" }o--o| "Team" : team
+"_TeamToUser" }o--|| "Team" : Team
+"_TeamToUser" }o--|| "User" : User
 ```
 
 ### `User`
@@ -59,6 +70,18 @@ Properties as follows:
 - `priority`:
 - `status`:
 - `authorId`:
+- `assigneeId`:
+- `achieverId`:
 - `teamId`:
 - `createdAt`:
 - `updatedAt`:
+- `achievedAt`:
+
+### `_TeamToUser`
+
+Pair relationship table between [Team](#Team) and [User](#User)
+
+Properties as follows:
+
+- `A`:
+- `B`:
