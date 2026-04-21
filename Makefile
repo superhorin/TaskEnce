@@ -22,6 +22,9 @@ setup:
 	fi
 	@echo "🚀 Setting up frontend..."
 	cd $(FRONT_DIR) && mise trust && mise install && $(MISE) npm install
+	@if [ ! -f $(FRONT_DIR)/.env ]; then \
+		cp $(FRONT_DIR)/.env.local $(FRONT_DIR)/.env; \
+	fi
 
 # 2. Docker起動
 .PHONY: docker-up
