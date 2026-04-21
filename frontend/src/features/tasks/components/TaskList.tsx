@@ -1,28 +1,23 @@
 import { useAppSelector } from "../../../app/hooks";
+import { TaskColumn } from "./TaskColumn";
 
 export const TaskList = () => {
 
 	const tasks = useAppSelector(state => state.tasks.items);
 	const loading = useAppSelector(state => state.tasks.loading);
 
+	const todoTasks = tasks.filter((task) => task.status === 'TODO');
+	const inProgressTasks = tasks.filter((task) => task.status === 'IN_PROGRESS');
+
 	return (
-		<div>
-			<p>Tasks List</p>
-			{loading ? (
-				<p>loading.....</p>
-			) : tasks.length === 0 ? (
-				<p>No tasks</p>
+		loading ? (
+			<p>loading...</p>) : tasks.length === 0 ? (
+				<p>Let's get task!!!!</p>
 			) : (
-				<ul>
-					{tasks.map((task) => (
-						<li>
-							<strong>{task.title}</strong>
-							<span>{task.priority}</span>
-							<small>{task.author.name}</small>
-						</li>
-					))}
-				</ul>
-			)}
-		</div>
+			<div className="grid grid-cols-2 gap-8">
+				<TaskColumn title="TODO" tasks={todoTasks} />
+				<TaskColumn title="IN_PROGRESS" tasks={inProgressTasks} />
+			</div>
+		)
 	);
 }

@@ -12,9 +12,11 @@ export const TaskManager = () => {
 	}, [dispatch])
 
 	return (
-		<div>
-			<TaskHandler />
+		<div className="max-w-6xl mx-auto">
+			<div className="mb-8">
+				<TaskHandler />
+			</div>
 			<TaskList />
 		</div>
-	)
+	);
 }

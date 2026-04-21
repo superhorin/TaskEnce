@@ -10,7 +10,7 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
 
   const configService = app.get(ConfigService);
-  const origins = configService.get<string>('ALLOWED_ORIGINS')?.split(',') || ['http://localhost:3000'];
+  const origins = configService.get<string>('ALLOWED_ORIGINS')?.split(',') || ['http://localhost:5173'];
   const port = configService.get<number>('BACKEND_PORT') || 3003;
 
   app.enableCors({

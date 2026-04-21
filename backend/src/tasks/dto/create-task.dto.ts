@@ -1,4 +1,4 @@
-import { Priority, Prisma } from "@prisma/client";
+import { Priority, Prisma, Status } from "@prisma/client";
 import { IsString, IsOptional, IsEnum, IsNotEmpty } from "class-validator";
 
 export class CreateTaskDto {
@@ -13,6 +13,10 @@ export class CreateTaskDto {
 	@IsOptional()
 	@IsEnum(Priority)
 	priority?:		Priority;
+
+	@IsOptional()
+	@IsEnum(Status)
+	status?:		Status;
 
 	@IsOptional()
 	@IsString()

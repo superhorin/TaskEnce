@@ -29,20 +29,15 @@ cd TaskEnce
 ## 💻 使い方・実行方法
 アプリケーションを起動するには、フロントエンドとバックエンドそれぞれのサーバーを立ち上げる必要があります。
 ※事前にNode.jsおよびDockerがインストールされていることを確認してください。
+### 起動準備
+フロントエンドとバックエンドでパッケージのインストール、envファイルの準備、dockerコンテナの起動
+```
+make
+```
 ### バックエンドの起動
-データベース（PostgreSQL）のコンテナを立ち上げ、Nest.jsサーバーを起動します。
+バックエンドのターミナルを立ち上げて、バックエンドサーバー（Nest.js）の起動
 ```
-Bash
-cd backend
-mise trust
-npm install
-cp .env.local .env
-```
-.envに任意の変数を入力
-```
-docker-compose up -d
-npm run dev #初回起動（db:sync && start:dev）
-npm run start:dev #２回目以降
+make dev-back
 ```
 
 ### 🗄 データベースマイグレーションのルール
@@ -60,13 +55,27 @@ npm run db:sync
 ```
 
 ### フロントエンドの起動
-別のターミナルを開き、Reactの開発サーバーを起動します。
+フロントエンドのターミナルを立ち上げて、フロントエンドサーバー（React）の起動
 ```
-Bash
-cd frontend
-mise trust
-npm install
-npm run dev
+make dev-front
 ```
 
-起動後、コンソールに表示されるローカルURL（例: http://localhost:3000 など）にブラウザからアクセスして利用を開始してください。
+起動後、コンソールに表示されるローカルURL（例: http://localhost:5173 など）にブラウザからアクセスして利用を開始してください。
+
+### Makefileコマンド一覧
+```
+make
+```
+パッケージインストール、envファイル準備、dockerコンテナ起動
+```
+make dev-back
+```
+バックエンドサーバーの起動
+```
+make dev-front
+```
+フロントエンドサーバーの起動
+```
+make down
+```
+dockerコンテナの停止
