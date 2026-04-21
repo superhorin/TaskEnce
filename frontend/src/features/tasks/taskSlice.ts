@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import type { Task } from './task';
 import api from '@/lib/api';
+import axios from 'axios';
 
 interface TaskState {
   tasks: Task[];
@@ -14,8 +15,11 @@ export const updateTask = createAsyncThunk(
       const res = await api.patch(`/tasks/${id}`, updates);
 
       return res.data;
-    } catch(error: any) {
-      return rejectWithValue(error.response?.data?.message || 'failed at patching task');
+    } catch(error) {
+      if (axios.isAxiosError(error)) {
+        return rejectWithValue(error.response?.data?.message || 'failed at patching task');
+      }
+      return rejectWithValue('An unexpected error occurred at patching.');
     }
   }
 )
@@ -29,8 +33,11 @@ export const addTask= createAsyncThunk(
       const res = await api.post('/tasks', taskData);
 
       return res.data;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'failed at adding task');
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        return rejectWithValue(error.response?.data?.message || 'failed at adding task');
+      }
+      return rejectWithValue('An unexpected error occurred at adding.');
     }
   }
 )
@@ -42,8 +49,11 @@ export const fetchTaskById = createAsyncThunk(
       const res = await api.get(`/tasks/${id}`);
 
       return res.data;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || `failed at fetching task:${id}`);
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        return rejectWithValue(error.response?.data?.message || `failed at fetching task:${id}`);
+      }
+      return rejectWithValue('An unexpected error occurred at fetching task.');
     }
   }
 )
@@ -55,8 +65,11 @@ export const fetchTasks = createAsyncThunk(
       const res = await api.get('/tasks');
 
       return res.data;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'failed at fetching tasks');
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        return rejectWithValue(error.response?.data?.message || 'failed at fetching tasks');
+      }
+      return rejectWithValue('An unexpected error occurred at fetching tasks.');
     }
   }
 )

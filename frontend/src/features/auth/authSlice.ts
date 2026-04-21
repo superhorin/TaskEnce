@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import type { AuthState } from "./auth";
 import api from '@/lib/api';
+import axios from "axios";
 
 const	initialState: AuthState = {
 	user:			null,
@@ -16,8 +17,11 @@ export const loginUser = createAsyncThunk(
 			const res = await api.post('/auth/login', credentials);
 
 			return res.data;
-		} catch (error: any) {
-			return rejectWithValue(error.response?.data?.message || 'failed at login');
+		} catch (error) {
+			if (axios.isAxiosError(error)) {
+				return rejectWithValue(error.response?.data?.message || 'failed at login');
+			}
+			return rejectWithValue('An unexpected error occurred at login.');
 		}
 	}
 );
@@ -29,8 +33,11 @@ export const registerUser = createAsyncThunk(
 			const res = await api.post('/auth/register', credentials);
 
 			return res.data;
-		} catch (error: any) {
-			return rejectWithValue(error.response?.data?.message || 'failed at register');
+		} catch (error) {
+			if (axios.isAxiosError(error)) {
+				return rejectWithValue(error.response?.data?.message || 'failed at register');
+			}
+			return rejectWithValue('An unexpected error occurred at register.');
 		}
 	}
 );
@@ -41,8 +48,11 @@ export const fetchCurrentUser = createAsyncThunk(
 		try {
 			const res = await api.get('/auth/me');
 			return res.data;
-		} catch (error: any) {
-			return rejectWithValue(error.response?.data?.message || 'failed to fetch profile');
+		} catch (error) {
+			if (axios.isAxiosError(error)) {
+				return rejectWithValue(error.response?.data?.message || 'failed to fetch profile');
+			}
+			return rejectWithValue('An unexpected error occurred at fetching current user.');
 		}
 	}
 );
@@ -53,8 +63,11 @@ export const logoutUser = createAsyncThunk(
 		try {
 			const res = await api.post('/auth/logout');
 			return res.data;
-		} catch (error: any) {
-			return rejectWithValue(error.response?.data?.message || 'failed to logout');
+		} catch (error) {
+			if (axios.isAxiosError(error)) {
+				return rejectWithValue(error.response?.data?.message || 'failed to logout');
+			}
+			return rejectWithValue('An unexpected error occurred at logout.');
 		}
 	}
 )

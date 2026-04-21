@@ -1,6 +1,7 @@
-import { __DO_NOT_USE__ActionTypes, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import type { Membership } from "./membership";
 import api from "@/lib/api";
+import axios from "axios";
 
 interface TeamState {
 	members:	Membership[];
@@ -19,8 +20,11 @@ export const fetchTeams = createAsyncThunk(
 			const res = await api.get('/team');
 
 			return res.data;
-		} catch (error: any) {
-			return rejectWithValue(error.response?.data?.message || 'failed at fetching teams');
+		} catch (error) {
+			if (axios.isAxiosError(error)) {
+				return rejectWithValue(error.response?.data?.message || 'failed at fetching teams');
+			}
+			return rejectWithValue('An unexpected error occurred at fetching teams.');
 		}
 	}
 )
