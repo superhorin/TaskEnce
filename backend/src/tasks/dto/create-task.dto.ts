@@ -1,5 +1,5 @@
-import { Priority, Prisma, Status } from "@prisma/client";
-import { IsString, IsOptional, IsEnum, IsNotEmpty } from "class-validator";
+import { Priority, Difficulty, Duration } from "@prisma/client";
+import { IsString, IsOptional, IsEnum, IsNotEmpty, IsInt, Min } from "class-validator";
 
 export class CreateTaskDto {
 	@IsString()
@@ -11,12 +11,21 @@ export class CreateTaskDto {
 	description?:	string;
 
 	@IsOptional()
-	@IsEnum(Priority)
-	priority?:		Priority;
+	@IsEnum(Difficulty)
+	difficulty?:	Difficulty;
 
 	@IsOptional()
-	@IsEnum(Status)
-	status?:		Status;
+	@IsEnum(Duration)
+	duration?:		Duration;
+
+	@IsOptional()
+	@IsInt()
+	@Min(0)
+	progress?:		number;
+
+	@IsOptional()
+	@IsEnum(Priority)
+	priority?:		Priority;
 
 	@IsOptional()
 	@IsString()
