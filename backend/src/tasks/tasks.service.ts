@@ -1,6 +1,7 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateTaskDto } from './dto/create-task.dto';
+import { UpdateTaskDto } from './dto/update-tasks.dto';
 import { dateTimestampProvider } from 'rxjs/internal/scheduler/dateTimestampProvider';
 
 @Injectable()
@@ -46,5 +47,23 @@ export class TasksService {
 				team: true,
 			}
 		})
+	}
+
+	async updateTask(id: string, dto: UpdateTaskDto) {
+		this.logger.log(`updateTaskが呼ばれました: ${id} ${dto.progress}`);
+		try {
+			const updateTask = await this.prisma.task.update({
+				where: {id: id},
+				data: {
+					...dto,
+				},
+			});
+			return updateTask;
+		} catch (error) {
+			if (error.code === 'P2025') {
+				throw new NotFoundException(`Task with ID "${id}" not found`);
+			}
+			throw error;
+		}
 	}
 }

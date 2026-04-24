@@ -1,5 +1,8 @@
 import type { Task } from "../task";
+import { useAppDispatch } from "@/app/hooks";
+import { updateTask } from "../taskSlice";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 interface TaskColumnProps {
 	title: 			string;
@@ -8,6 +11,17 @@ interface TaskColumnProps {
 }
 
 export const TaskColumn = ({ title, tasks, titleColor }: TaskColumnProps) => {
+	const dispatch = useAppDispatch();
+
+	const handleUpdate = (taskId: string, currentProgress: number) => {
+		const newProgress = Math.min(currentProgress + 10, 100);
+
+		dispatch(updateTask({
+			id: taskId,
+			updates: {progress: newProgress},
+		}));
+	}
+
 	return (
 		<div>
 			<h2 className={`text-xl font-bold mb-4 ${titleColor}`}>{title}</h2>
@@ -27,6 +41,18 @@ export const TaskColumn = ({ title, tasks, titleColor }: TaskColumnProps) => {
 										difficulty: {task.difficulty} duration: {task.duration} priority: {task.priority} progress: {task.progress}
 									</span>
 									<small className="text-slate-500">{task.author?.name}</small>
+								</div>
+								<div>
+									<span>
+										Progress: {task.progress}%
+									</span>
+									<Button
+										size="sm"
+										onClick={() => handleUpdate(task.id, task.progress)}
+										disabled={task.progress >= 100}
+									>
+										+10%
+									</Button>
 								</div>
 							</CardContent>
 						</Card>
