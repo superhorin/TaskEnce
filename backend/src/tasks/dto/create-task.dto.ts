@@ -1,7 +1,13 @@
+import { ApiProperty } from "@nestjs/swagger";
 import { Priority, Difficulty, Duration } from "@prisma/client";
 import { IsString, IsOptional, IsEnum, IsNotEmpty, IsInt, Min } from "class-validator";
 
 export class CreateTaskDto {
+	@ApiProperty({
+		description: 'CreateTaskDto',
+		example: 'Send email',
+	})
+
 	@IsString()
 	@IsNotEmpty()
 	title:			string;

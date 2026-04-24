@@ -12,18 +12,24 @@ erDiagram
   String id PK
   String name
   String email UK
+  Int level
+  Int exp
   DateTime createdAt
 }
 "Team" {
   String id PK
   String name
+  Int level
+  Int exp
 }
 "Task" {
   String id PK
   String title
   String description "nullable"
+  Difficulty difficulty
+  Duration duration
   Priority priority
-  Status status
+  Int progress
   String authorId FK
   String assigneeId FK "nullable"
   String achieverId FK "nullable"
@@ -31,6 +37,7 @@ erDiagram
   DateTime createdAt
   DateTime updatedAt
   DateTime achievedAt "nullable"
+  DateTime dueDate "nullable"
 }
 "_TeamToUser" {
   String A FK
@@ -51,6 +58,8 @@ Properties as follows:
 - `id`:
 - `name`:
 - `email`:
+- `level`:
+- `exp`:
 - `createdAt`:
 
 ### `Team`
@@ -59,6 +68,8 @@ Properties as follows:
 
 - `id`:
 - `name`:
+- `level`:
+- `exp`:
 
 ### `Task`
 
@@ -67,8 +78,10 @@ Properties as follows:
 - `id`:
 - `title`:
 - `description`:
+- `difficulty`:
+- `duration`:
 - `priority`:
-- `status`:
+- `progress`:
 - `authorId`:
 - `assigneeId`:
 - `achieverId`:
@@ -76,6 +89,7 @@ Properties as follows:
 - `createdAt`:
 - `updatedAt`:
 - `achievedAt`:
+- `dueDate`:
 
 ### `_TeamToUser`
 
